@@ -191,7 +191,7 @@ class PortalController extends Controller
             //dd($event_temp);
         }
 
-        dd($valor_pago, $valor);
+        //dd($valor_pago, $valor);
 
         $produtos = $prod->get()->toArray();
         $termo = ProdutosEServicosTermo::where('id', $prod['termo_id'])->get()->toArray()[0];
