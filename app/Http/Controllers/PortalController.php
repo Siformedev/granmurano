@@ -59,6 +59,7 @@ class PortalController extends Controller
 
     public function extrato()
     {
+        dd("aqui");
         $formando = Auth::user()->userable->id;
         $pedidos = FormandoProdutosEServicos::where('forming_id', $formando)->where('status', 1)->get();
         $dataView = ['pedidos' => $pedidos];
