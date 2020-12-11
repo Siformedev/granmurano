@@ -72,13 +72,13 @@ class PortalController extends Controller
         
         $forming_id = \auth()->user()->userable->id;
         
-        dd($forming_id);
-        
         if ($prod->forming_id != $forming_id) {
             return redirect()->route('erro.404');
         }
 
         $parcelas = FormandoProdutosParcelas::where('formandos_produtos_id', $prod->id)->get()->toArray();
+
+        dd($parcelas);
 
         $pagamentos = [];
         foreach ($parcelas as $parcela) {
