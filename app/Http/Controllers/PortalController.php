@@ -209,6 +209,7 @@ class PortalController extends Controller
         AuditAndLog::createLog(Auth::user()->id, 'Acessou Extrato Produtos: ' . $prod->name . ' - ID#' . $prod->id, 'null', Auth::user()->userable->contract_id);
 
         $id_sessao = $pseg->geraSessao();
+        dd($id_sessao);
         $disable_cc_pgto = false;
         
         return view('portal.extrato_detalhe', compact('prod', 'parcelas', 'termo', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'events_array', 'logoimini', 'logo', 'id_sessao', 'pgto', 'disable_cc_pgto'));
