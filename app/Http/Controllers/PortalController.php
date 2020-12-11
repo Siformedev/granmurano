@@ -78,8 +78,6 @@ class PortalController extends Controller
 
         $parcelas = FormandoProdutosParcelas::where('formandos_produtos_id', $prod->id)->get()->toArray();
 
-        dd($parcelas);
-
         $pagamentos = [];
         foreach ($parcelas as $parcela) {
             //$ret = ParcelasPagamentos::where('parcela_id', $parcela['id'])->where('deleted', 0)->first();
@@ -193,7 +191,7 @@ class PortalController extends Controller
             //dd($event_temp);
         }
 
-        //dd($valor_pago, $valor);
+        dd($valor_pago, $valor);
 
         $produtos = $prod->get()->toArray();
         $termo = ProdutosEServicosTermo::where('id', $prod['termo_id'])->get()->toArray()[0];
