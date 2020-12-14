@@ -18,7 +18,7 @@ Route::group(['prefix'=>'/','middleware' => 'web'], function (){
     //return redirect()->route('site.home');
     /*SITE*/
     // Route::get('', ['uses' => 'SiteController@home', 'as' => 'site.home']);
-    Route::get('',['uses' => 'API\AppController@login', 'as' => 'app.login']);
+    Route::get('',['uses' => 'PortalController@extrato', 'as' => 'extrato']);
     Route::post('/contato', ['uses' => 'SiteController@contato', 'as' => 'site.contato']);
     Route::get('/simulacao', ['uses' => 'SiteController@simulacao', 'as' => 'site.simulacao']);
     Route::post('/simulacao', ['uses' => 'SiteController@simulacaoStore', 'as' => 'site.simulacao.store']);
