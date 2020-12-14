@@ -301,5 +301,5 @@ Route::get('/erro/404', function (){
 
 
 Route::get('/',function(){
-    return view('auth.login')
-})
+    return view('auth.login');
+});
