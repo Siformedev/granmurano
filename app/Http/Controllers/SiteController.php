@@ -33,7 +33,6 @@ class SiteController extends Controller
         //return view('site.home');
         return \View::make('site.home')->withSuccess('Task Created Successfully!');
         //return redirect('site.home')->withSuccess('Task Created Successfully!');
-        
 
 
     }
