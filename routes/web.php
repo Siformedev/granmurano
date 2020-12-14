@@ -14,25 +14,25 @@
 use Illuminate\Support\Facades\Auth;
 
 
-// Route::group(['prefix'=>'/','middleware' => 'web'], function (){
-//     //return redirect()->route('site.home');
-//     /*SITE*/
-//     // Route::get('', ['uses' => 'SiteController@home', 'as' => 'site.home']);
-//     Route::get('',['uses' => 'PortalController@home', 'as' => 'home']);
-//     Route::post('/contato', ['uses' => 'SiteController@contato', 'as' => 'site.contato']);
-//     Route::get('/simulacao', ['uses' => 'SiteController@simulacao', 'as' => 'site.simulacao']);
-//     Route::post('/simulacao', ['uses' => 'SiteController@simulacaoStore', 'as' => 'site.simulacao.store']);
+Route::group(['prefix'=>'/','middleware' => 'web'], function (){
+    //return redirect()->route('site.home');
+    /*SITE*/
+    Route::get('', ['uses' => 'SiteController@home', 'as' => 'site.home']);
+    Route::get('',['uses' => 'PortalController@home', 'as' => 'home']);
+    Route::post('/contato', ['uses' => 'SiteController@contato', 'as' => 'site.contato']);
+    Route::get('/simulacao', ['uses' => 'SiteController@simulacao', 'as' => 'site.simulacao']);
+    Route::post('/simulacao', ['uses' => 'SiteController@simulacaoStore', 'as' => 'site.simulacao.store']);
 
-//     Route::get('/autorizacao', function()
-//     {
-//         include public_path().'/auth_pseg.php';
-//     });
+    Route::get('/autorizacao', function()
+    {
+        include public_path().'/auth_pseg.php';
+    });
 
-//     Route::get('/retorno', function()
-//     {
-//         include public_path().'/retorno_auth_pseg.php';
-//     });
-// });
+    Route::get('/retorno', function()
+    {
+        include public_path().'/retorno_auth_pseg.php';
+    });
+});
 
 
 
@@ -299,7 +299,3 @@ Route::get('/erro/404', function (){
     return view('erro.404');
 })->name('erro.404');
 
-
-Route::get('/',function(){
-    return view('auth.login');
-});
