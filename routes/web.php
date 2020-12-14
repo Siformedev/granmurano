@@ -14,25 +14,27 @@
 use Illuminate\Support\Facades\Auth;
 
 
-Route::group(['prefix'=>'/','middleware' => 'web'], function (){
-    //return redirect()->route('site.home');
-    /*SITE*/
-    // Route::get('', ['uses' => 'SiteController@home', 'as' => 'site.home']);
-    Route::get('',['uses' => 'PortalController@home', 'as' => 'home']);
-    Route::post('/contato', ['uses' => 'SiteController@contato', 'as' => 'site.contato']);
-    Route::get('/simulacao', ['uses' => 'SiteController@simulacao', 'as' => 'site.simulacao']);
-    Route::post('/simulacao', ['uses' => 'SiteController@simulacaoStore', 'as' => 'site.simulacao.store']);
+// Route::group(['prefix'=>'/','middleware' => 'web'], function (){
+//     //return redirect()->route('site.home');
+//     /*SITE*/
+//     // Route::get('', ['uses' => 'SiteController@home', 'as' => 'site.home']);
+//     Route::get('',['uses' => 'PortalController@home', 'as' => 'home']);
+//     Route::post('/contato', ['uses' => 'SiteController@contato', 'as' => 'site.contato']);
+//     Route::get('/simulacao', ['uses' => 'SiteController@simulacao', 'as' => 'site.simulacao']);
+//     Route::post('/simulacao', ['uses' => 'SiteController@simulacaoStore', 'as' => 'site.simulacao.store']);
 
-    Route::get('/autorizacao', function()
-    {
-        include public_path().'/auth_pseg.php';
-    });
+//     Route::get('/autorizacao', function()
+//     {
+//         include public_path().'/auth_pseg.php';
+//     });
 
-    Route::get('/retorno', function()
-    {
-        include public_path().'/retorno_auth_pseg.php';
-    });
-});
+//     Route::get('/retorno', function()
+//     {
+//         include public_path().'/retorno_auth_pseg.php';
+//     });
+// });
+
+
 
 /*TESTE*/
 Route::get('teste/t1', ['uses' => 'TesteController@t1', 'as' => 'teste.t1']);
@@ -57,6 +59,7 @@ Route::get('adesao/concluido', ['uses' => 'adesaoController@concluido', 'as' => 
 
 Route::group(['prefix'=>'portal','as' => 'portal.', 'middleware' => 'auth'], function (){
 
+    Route::get('/', ['uses' => 'PortalController@home', 'as' => 'home']);
     Route::get('home', ['uses' => 'PortalController@home', 'as' => 'home']);
     Route::get('extrato', ['uses' => 'PortalController@extrato', 'as' => 'extrato']);
     Route::get('extrato/prod/{prod}', ['uses' => 'PortalController@extratoProduto', 'as' => 'extrato.produto']);
