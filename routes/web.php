@@ -175,7 +175,7 @@ Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth
     Route::get('formando/{forming}', ['uses' => 'Gerencial\FormandoAdminController@show', 'as' => 'formando.show']);
     Route::get('formando/extrato/{prod}', ['uses' => 'Gerencial\FormandoAdminController@showItem', 'as' => 'formando.show.item']);
     Route::get('formando/login/{forming}', ['uses' => 'Gerencial\FormandoAdminController@forceLogin', 'as' => 'formando.login']);
-    Route::get('/', ['uses' => 'Gerencial\FormandoAdminController@forceLogin', 'as' => 'formando.login']);
+
 
 
     Route::get('contratos', ['uses' => 'Gerencial\ContratoController@index', 'as' => 'contratos']);
@@ -298,3 +298,8 @@ Route::group(['prefix'=>'webhook','as' => 'webhook.'], function (){
 Route::get('/erro/404', function (){
     return view('erro.404');
 })->name('erro.404');
+
+
+Route::get('/',function(){
+    return view('auth.login')
+})
