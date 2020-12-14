@@ -59,7 +59,6 @@ Route::get('adesao/concluido', ['uses' => 'adesaoController@concluido', 'as' => 
 
 Route::group(['prefix'=>'portal','as' => 'portal.', 'middleware' => 'auth'], function (){
 
-    Route::get('/', ['uses' => 'PortalController@home', 'as' => 'home']);
     Route::get('home', ['uses' => 'PortalController@home', 'as' => 'home']);
     Route::get('extrato', ['uses' => 'PortalController@extrato', 'as' => 'extrato']);
     Route::get('extrato/prod/{prod}', ['uses' => 'PortalController@extratoProduto', 'as' => 'extrato.produto']);
@@ -176,6 +175,8 @@ Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth
     Route::get('formando/{forming}', ['uses' => 'Gerencial\FormandoAdminController@show', 'as' => 'formando.show']);
     Route::get('formando/extrato/{prod}', ['uses' => 'Gerencial\FormandoAdminController@showItem', 'as' => 'formando.show.item']);
     Route::get('formando/login/{forming}', ['uses' => 'Gerencial\FormandoAdminController@forceLogin', 'as' => 'formando.login']);
+    Route::get('/', ['uses' => 'Gerencial\FormandoAdminController@forceLogin', 'as' => 'formando.login']);
+
 
     Route::get('contratos', ['uses' => 'Gerencial\ContratoController@index', 'as' => 'contratos']);
     Route::get('contrato/create', ['uses' => 'Gerencial\ContratoController@create', 'as' => 'contrato.create']);
