@@ -31,10 +31,9 @@ class SiteController extends Controller
 
         //$toast_success = array('toast_success' => 'Task Created Successfully!');
         //return view('site.home');
-        // return \View::make('site.home')->withSuccess('Task Created Successfully!');
+        return \View::make('site.home')->withSuccess('Task Created Successfully!');
         //return redirect('site.home')->withSuccess('Task Created Successfully!');
-
-        return view('auth.login');
+        
 
 
     }
