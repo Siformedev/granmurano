@@ -29,7 +29,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="left-menu-link" href="{{route('gerencial.contratos')}}">
+                        <a class="left-menu-link" href="{{route('gerencial.cursos.index')}}">
                             Gerenciar Cursos
                         </a>
                     </li>
