@@ -8,3 +8,15 @@
         </div>
     </section>
 @endsection
+
+
+@section('script')
+
+<script>
+
+    alert('teste');
+
+
+</script>
+
+@endsection
