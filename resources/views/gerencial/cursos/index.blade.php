@@ -4,7 +4,32 @@
 
     <section class="page-content">
         <div class="page-content-inner">
-            Cursos
+            
+            <table class="table table-striped table-inverse table-responsive" id="cursos">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Id</th>
+                        <th>Curso</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row">1</td>
+                            <td>Curso 1</td>
+                            <td>Editar</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">2</td>
+                            <td>Curso 2</td>
+                            <td>Editar</td>
+                        </tr>
+                    </tbody>
+            </table>
+
+
+
+
         </div>
     </section>
 @endsection
@@ -14,7 +39,9 @@
 
 <script>
 
-    alert('teste');
+$(document).ready(function() {
+    $('#cursos').DataTable();
+} );
 
 
 </script>
