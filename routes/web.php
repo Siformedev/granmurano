@@ -183,6 +183,7 @@ Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth
     Route::get('contrato/{contract}/edit', ['uses' => 'Gerencial\ContratoController@edit', 'as' => 'contrato.edit']);
     Route::post('contrato/store', ['uses' => 'Gerencial\ContratoController@store', 'as' => 'contrato.store']);
     Route::post('contrato/{contract}/update', ['uses' => 'Gerencial\ContratoController@update', 'as' => 'contrato.update']);
+    Route::resource('cursos', 'CursosController');
 
     //expenses
     Route::get('contrato/{contract}/expenses', ['uses' => 'Gerencial\Contrato\ContratoExpensesController@index', 'as' => 'contrato.expenses']);

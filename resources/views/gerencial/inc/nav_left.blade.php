@@ -28,6 +28,11 @@
                             Consultar
                         </a>
                     </li>
+                    <li>
+                        <a class="left-menu-link" href="{{route('gerencial.contratos')}}">
+                            Gerenciar Cursos
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="left-menu-list-submenu">
