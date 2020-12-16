@@ -13,7 +13,7 @@ class CursosController extends Controller
         return view('gerencial.cursos.index', compact('cursos'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request) 
     {
         $curso = Course::create([
             'name'=>$request->nome,
