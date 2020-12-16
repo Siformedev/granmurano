@@ -184,6 +184,8 @@ Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth
     Route::post('contrato/store', ['uses' => 'Gerencial\ContratoController@store', 'as' => 'contrato.store']);
     Route::post('contrato/{contract}/update', ['uses' => 'Gerencial\ContratoController@update', 'as' => 'contrato.update']);
     Route::get('cursos',  ['uses' =>'CursosController@index','as'=>'cursos.index']);
+    Route::post('cursos/store',  ['uses' =>'CursosController@store','as'=>'cursos.store']);
+    Route::post('cursos/delete/{id}',  ['uses' =>'CursosController@delete','as'=>'cursos.delete']);
 
     //expenses
     Route::get('contrato/{contract}/expenses', ['uses' => 'Gerencial\Contrato\ContratoExpensesController@index', 'as' => 'contrato.expenses']);
