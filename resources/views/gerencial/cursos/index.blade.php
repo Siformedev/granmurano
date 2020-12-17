@@ -48,7 +48,7 @@
                                 <td scope="row">{{$item->id}}</td>
                                 <td>{{$item->name}}</td>
                                 {!! Form::open(['route'=>['gerencial.cursos.delete',$item->id],'id'=>'formDelete']) !!}
-                                <td>{!! Form::submit('apagar') !!}</td>
+                                <td><a onclick="deleteConfirm()"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
                                 {!! Form::close() !!}
                                 <td><a href="#" id="editar"><i class="fa fa-edit" aria-hidden="true"></i></a></td>
                             </tr> 
@@ -79,7 +79,7 @@ $(document).ready(function() {
 
 function deleteConfirm(){
 
-    Swal({
+swal({
   title: "Tem certeza de que deseja apagar?",
   text: "Essa operação não pode ser desfeita",
   type: "warning",
@@ -94,11 +94,16 @@ function(isConfirm){
   if (isConfirm) {
     $('#formDelete').submit();          
   } else {
-    Swal("Cancelado", "Seu registro não foi apagado :)", "error");
+    // swal("Cancelado", "Seu registro não foi apagado :)", "error");
+    console.log('teste');
   }
+  swal.close();
 });
 
 }
+
+
+
 
 
 </script>

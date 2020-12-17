@@ -20,7 +20,7 @@ class CursosController extends Controller
             'status'=>1
         ]);
 
-        return redirect()->back()->with('success', 'Curso cadastrado com sucesso!'); 
+        return redirect()->back(); 
     }
 
     public function delete($id){
@@ -28,9 +28,9 @@ class CursosController extends Controller
         
         try {
             Course::destroy($id);
-            return redirect()->back()->with('success', 'Curso apagado com sucesso!'); 
+            return redirect()->back(); 
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Curso não pode ser apagado!'); 
+            return redirect()->back(); 
         }
        
         
