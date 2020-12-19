@@ -179,7 +179,10 @@ class FormandoAdminController extends Controller
         $contract = auth()->user()->userable->contract_id;
         $forming = Forming::find($prod->forming_id);
 
+          
         $parcelas = FormandoProdutosParcelas::where('formandos_produtos_id', $prod['id'])->get()->toArray();
+        
+
         $produtos = $prod->get()->toArray();
         $termo = ProdutosEServicosTermo::where('id', $prod['termo_id'])->get()->toArray()[0];
         $termo = str_replace('[[=valor]]', number_format($prod->valorFinal(), 2, ',', '.'), $termo);
@@ -197,6 +200,7 @@ class FormandoAdminController extends Controller
 
         }
 
+  
         return view('gerencial.formandos.show_item', compact('prod','parcelas', 'termo', 'pagamentos', 'dateLimit', 'forming', 'contract'));
     }
 

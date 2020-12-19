@@ -390,6 +390,8 @@ class ContratoAdminController extends Controller
             $formings_data[$forming->id]['pago'] = $total_forming['pago'];
             $total_forming['parcela'] = 0;
             $total_forming['pago'] = 0;
+
+        
         }
 
         return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total'));
@@ -397,6 +399,8 @@ class ContratoAdminController extends Controller
 
     public function finance2(Request $request, Contract $contract)
     {
+        
+
         $total = [];
         $total['parcela'] = 0;
         $total['pago'] = 0;
@@ -410,6 +414,8 @@ class ContratoAdminController extends Controller
             $formings_data[$forming->id]['nome'] = $forming->nome . ' ' . $forming->sobrenome;
 
             $products = FormandoProdutosEServicos::where('forming_id', $forming->id)->where('category_id', '=', 1)->get();
+
+
             foreach ($products as $product) {
 
                 $parcels = FormandoProdutosParcelas::where('formandos_produtos_id', $product->id)->get();
@@ -442,11 +448,14 @@ class ContratoAdminController extends Controller
                     }
                 }
             }
+
             $formings_data[$forming->id]['parcela'] = $total_forming['parcela'];
             $formings_data[$forming->id]['pago'] = $total_forming['pago'];
             $total_forming['parcela'] = 0;
             $total_forming['pago'] = 0;
         }
+
+        // dd($formings_data);
 
         return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total'));
     }

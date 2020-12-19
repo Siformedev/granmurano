@@ -40,6 +40,8 @@
                         <tbody>
                         <?php
                         $sumTaxa = 0;
+                        $sumBoleto = 0;
+                        $sumCartao = 0;
                         ?>
                         @foreach($formings_data as $forming)
                             <?php
@@ -47,7 +49,18 @@
 
                                         $sumTaxa+= $forming['taxa'];
                                     }
+
+                                    if(isset($forming['pgs']['App\PagamentosBoleto'])){
+                                        $sumBoleto += $forming['pgs']['App\PagamentosBoleto'];
+                                    }
+
+                                    if(isset($forming['pgs']['App\PagamentosCartao'])){
+                                        $sumCartao += $forming['pgs']['App\PagamentosCartao'];
+                                    }
+
+                                   
                             ?>
+                            
                             <tr>
                                 <td><span class="font-size-16 font-weight-bold">{{$forming['nome']}}</span></td>
                                 <td>R$ {{number_format($forming['parcela'], 2, ",", ".")}}</td>
@@ -73,7 +86,9 @@
                         <tfoot>
                             <tr>
                                 <td><b>TOTAL</b></td>
-                                <td colspan="3"><b>R$ {{number_format($total['parcela'], 2, ",", ".")}}</b></td>
+                                <td><b>R$ {{number_format($total['parcela'], 2, ",", ".")}}</b></td>
+                                <td><b>R$ {{number_format($sumBoleto, 2, ",", ".")}}</b></td>
+                                <td><b>R$ {{number_format($sumCartao, 2, ",", ".")}}</b></td>
                                 <td><b>R$ {{number_format($sumTaxa, 2, ",", ".")}}</b></td>
                                 <td><b>R$ {{number_format($total['pago'], 2, ",", ".")}}</b></td>
                             </tr>
