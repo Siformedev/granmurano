@@ -15,7 +15,9 @@ $url_retorno = implode('/', $url) . '/retorno_auth_pseg.php?c='.$cliente;
 /** Id da aplicação é o nome que foi dado para a mesma, esta em um input chamado 'ID da aplicação:'*/
 $keys[0]['appId'] = 'siforme';
 /** A chave da aplicação esta oculto após a criação, pode-se fazer uma renovação para pegar a atual*/
-$keys[0]['appKey'] = '601DC6150606FEA334101F89F66E74F2';
+// Troquei a chaves pois parou de funcionar em 19/12/2020
+// $keys[0]['appKey'] = '601DC6150606FEA334101F89F66E74F2';
+$keys[0]['appKey'] = '7FFA349F35351DEBB4D41FBDE3E5DCBA';
 
 $curl = curl_init();
 
