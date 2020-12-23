@@ -75,248 +75,46 @@
 
         <section class="panel col-md-12">
             <p class="" align="center">
-                <a class="btn btn-success col-md-auto btn-block-xs-only" data-toggle="collapse" href="#area_cc"
+                   
+                    @if ($tipo_pagamento == 'cb')
+                    <a class="btn btn-success col-md-auto btn-block-xs-only" data-toggle="collapse" href="#area_cc"
                     role="button" aria-expanded="true" aria-controls="area_cc"><u>Cartão de Crédito</u></a>
-                <button class="btn btn-success col-md-auto btn-block-xs-only" type="button" data-toggle="collapse"
+                
+                    <button class="btn btn-success col-md-auto btn-block-xs-only" type="button" data-toggle="collapse"
                     data-target="#area_boleto" aria-expanded="true" aria-controls="area_boleto"><u>Boleto
                         Bancário</u></button>
+                    @endif
+
+                    @if($tipo_pagamento == 'b')
+                   
+                    <button class="btn btn-success col-md-auto btn-block-xs-only" type="button" data-toggle="collapse"
+                    data-target="#area_boleto" aria-expanded="true" aria-controls="area_boleto"><u>Boleto
+                        Bancário</u></button>
+                    @endif
+
+                    @if($tipo_pagamento == 'c')
+                    <a class="btn btn-success col-md-auto btn-block-xs-only" data-toggle="collapse" href="#area_cc"
+                    role="button" aria-expanded="true" aria-controls="area_cc"><u>Cartão de Crédito</u></a>
+                    
+                    @endif
+                   
             </p>
-
+            
             <div class="row">
-                <div class="col">
-                    <div class="collapse show" id="area_cc">
-                        <div class="card card-body">
-                            <div class="panel-body">
-                                <form id="payment-form"
-                                    action="{{route('portal.extrato.produto.paycredit.process', ['prod' => $prod['id']])}}"
-                                    method="POST">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="cc-nome">Nome no cartão</label>
-                                            <input type="text" pattern="[A-Z a-z]{1,32}" name="nome_cc"
-                                                class="form-control cc-nome"
-                                                title="Nome como esta no cartão, tudo em caixa alta" placeholder=""
-                                                required="">
-                                            <small class="text-muted">Nome completo, como mostrado no cartão.</small>
-                                            <div class="invalid-feedback">
-                                                O nome que está no cartão é obrigatório.
-                                            </div>
-                                        </div>
+                
+                @if ($tipo_pagamento == 'cb')
+                    @include('portal.componentes_extrato.cartao')
+                    @include('portal.componentes_extrato.boleto')
+                @endif
 
-                                        <div class="col-md-3 mb-3">
-                                            <label for="cc-numero">Data de Nascimento</label>
-                                            <input type="text" name="data_nasc" class="form-control cc-data_nasc"
-                                                placeholder="" required="" data-mask="00/00/0000" maxlength="11">
-                                            <small class="text-muted">Dado do titular do Cartão</small>
-                                            <div class="invalid-feedback">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label for="cc-numero">CPF do Titular do cartão</label>
-                                            <input type="text" data-mask="000.000.000-00"
-                                                pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}"
-                                                title="Digite um CPF no formato: xxx.xxx.xxx-xx" name="cpf_tit"
-                                                class="form-control cc-cpf" placeholder="" required="">
-                                            <div class="invalid-feedback">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="cc-numero">Número do cartão de crédito</label>
-                                            <input type="text" class="form-control cc-numero" placeholder=""
-                                                required="">
-                                            <div class="invalid-feedback">
-                                                O número do cartão de crédito é obrigatório.
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-4">
-                                            <label for="cc-expiracao">Data de expiração</label>
-                                            <input type="text" class="form-control cc-expiracao" data-mask="00/0000"
-                                                maxlength="7" placeholder="" required="">
-                                            <div class="invalid-feedback">
-                                                Data de expiração é obrigatória.
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label for="cc-cvv">CVV</label>
-                                            <input type="text" class="form-control cc-cvv" placeholder="" required="">
-                                            <div class="invalid-feedback">
-                                                Código de segurança é obrigatório.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="form-group">
-                                            <label class="form-control-label">Selecione a quantidade de
-                                                parcelas:</label>
-                                            <select name="pay-parcels" class="form-control">
-                                                @if(false)
-                                                @for($i=1;$i<=$parce_max;$i++) <?php $valor_f =  $saldo_pagar/$i; ?>
-                                                    <option value="{{$i}}">{{$i}}X de R$
-                                                    {{number_format($valor_f, 2, ",", ".")}}</option>
-                                                    @endfor
-                                                    @else
-                                                    <option> Aguardando número do Cartão </option>
-                                                    @endif
-                                            </select>
-                                        </div>
-                                        <button class="btn btn-primary" align="center" type="submit" id="btn-pagar">
-                                            Processar compra
-                                        </button>
-                                    </div>
-                                    <input type="hidden" name="token" id="token">
-                                    <input type="hidden" name="hash" id="hash">
-                                    <input type="hidden" name="prod" value="{{$prod['id']}}">
-                                    <input type="hidden" name="saldo" value="{{$saldo_pagar}}">
+                @if ($tipo_pagamento == 'c')
+                    @include('portal.componentes_extrato.cartao')
+                @endif
 
-                                    @foreach($sum_pags as $p)
-                                    <input type="hidden" name="parcels[]" value="{{$p}}">
-                                    @endforeach
+                @if ($tipo_pagamento == 'b')
+                    @include('portal.componentes_extrato.boleto')
+                @endif
 
-                                    {!! csrf_field() !!}
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="collapse" id="area_boleto">
-                        <div class="card card-body">
-                            <div class="row">
-                                <div class="col-md-12" style="font-size: 16px;">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">#</th>
-                                                <th class="text-center">Vencimento</th>
-                                                <th class="text-center">Valor</th>
-                                                <th class="text-center">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($parcelas as $parcela)
-                                            <?php
-                                        //dd($parcelas);
-                                        //dd($pagamentos);
-                                            $actionParc = '';
-                                            $sumpg = 0;
-                                            $tptype = '';
-                                            //dd($parcelas);
-                                            if(isset($pagamentos[$parcela['id']]) ){
-        
-                                                $parc = $pagamentos[$parcela['id']];
-                                                $sumpg = $parc->valor_pago;
-                                                if(isset($parc->typepaind_type)){
-                                                    $tptype = $parc->typepaind_type;
-                                                    $credit_parcels = isset($parc->typepaind->installments)?$parc->typepaind->installments:'';
-                                                    $credit_link_pdf = isset($parc->typepaind->secure_url)?$parc->typepaind->secure_url:'';
-                                                }else{
-                                                    $tptype = null;
-                                                }
-        
-                                            }
-
-                                            $dt_venc = (strtotime($parcela['dt_vencimento']));
-                                            //$dt_venc_boleto = strtotime(date('Y-m-d'));
-                                            $dt_venc_boleto = strtotime('+0 day', strtotime(date('Y-m-d')));
-                                            //$dt_venc = strtotime('+0 day', strtotime(date('2020-06-20')));
-                                            
-                                            //print_r(date("Y-m-d",$dt_venc));
-                                            //echo '<br>';
-                                            //print_r(date("Y-m-d",$dt_venc_boleto));
-                                            $dt_calc = $dt_venc - $dt_venc_boleto;
-                                            //echo '<br>';
-                                            //echo date("Y-m-d",$dt_calc);
-                                            //echo '<br>';
-                                            //dd($dt_calc);
-
-                                            //echo date('Y-m-d', strtotime($parcela['dt_vencimento']));
-                                            //dd($tptype);
-                                            if($sumpg >= $parcela['valor'] ){
-                                                
-                                                if($tptype == ''){
-                                                    $actionParc = '<span class="label label-success">PAGO</span>';
-                                                }elseif($tptype == 'App\PagamentosBoleto'){
-                                                    $actionParc = '<span class="label label-success">PAGO</span>';
-                                                }elseif($tptype == 'App\PagamentosCartao'){
-                                                    $credit_parcels = ($credit_parcels <= 0) ? 1 : $credit_parcels;
-                                                    $actionParc = '<span style="height: 30px; " class="label label-success">PAGO</span> <a target="_blank" href="'.$credit_link_pdf.'.pdf"> <img style="height: 60px;" src="'.asset('img/pay_credit_X'.$credit_parcels.'.png').'"></a>';
-                                                }
-        
-        
-                                            }elseif($sumpg <= 0 ){
-                                                
-
-                                                //dd($parc);
-                                                //var_dump($parc->typepaind_type);
-                                                if(date('Y-m-d', strtotime($parcela['dt_vencimento'])) <= $dateLimit->format('Y-m-d')){
-                                                    if(date('Y-m-d', strtotime($parcela['dt_vencimento'])) < date('Y-m-d')){
-                                                        //$actionParc = '<span class="label label-warning" title="Seu boleto estará disponível 5 dias antes do vencimento" target="_blank">Emitindo seu boleto...</span>';
-                                                        $actionParc = '<a href_javascript="'.route('portal.formando.boleto',['parcela' => $parcela['id']]).'" class="label label-danger boleto-imprimir" target="_blank">Vencida</a>';
-                                                    }
-                                                    elseif( isset($parc->typepaind_type) && $parc->typepaind_type == 'App\PagamentosCartao'){
-                                                        
-                                                    if($pgto['status'] == 'Recusado'){
-                                                        $actionParc = '<a  class="label label-danger" target="_blank"> Cartão '.$pgto['status'].' </a>';
-                                                    }else{
-                                                        $actionParc = '<a  class="label label-warning" target="_blank"> Cartão '.$pgto['status'].' </a>';
-                                                        $disable_cc_pgto = true;
-                                                    }
-                                                            
-                                                }elseif( $dt_calc <= 345600 && $dt_calc >= 0 ){
-                                                    
-                                                    
-                                                    //dd($dateLimit->format('Y-m-d'));
-                                                    //$date = date("Y-m-d");
-                                                    //dd((strtotime('-10 day',strtotime($parcela['dt_vencimento'])) - strtotime('+10 day', strtotime(date('Y-m-d')))));
-                                                    //$mod_date = strtotime($date."+ 4 days");
-                                                    //echo date("Y-m-d",$mod_date) . "\n";exit;
-                                                        //$dt_limite = strtotime('+4 day', strtotime(date('Y-m-d')));
-                                                        /*$dt_venc = (strtotime($parcela['dt_vencimento']));
-                                                        $dt_venc_boleto = strtotime('+4 day', strtotime(date('Y-m-d')));
-                                                    echo date("Y-m-d",$x);
-                                                    echo '<br>';
-                                                    echo date("Y-m-d",$y);
-                                                    echo '<br>';
-                                                    echo $x-$y;
-                                                    //echo date('Y-m-d', strtotime($parcela['dt_vencimento'])) -date('Y-m-d');
-                                                    exit;
-*/
-                                                        $actionParc = '<a href_javascript="'.route('portal.formando.boleto',['parcela' => $parcela['id']]).'" class="label label-warning boleto-imprimir" target="_blank">Imprimir</a>';
-                                                        
-                                                        //$actionParc = '<span class="label label-warning" title="Seu boleto estará disponível 5 dias antes do vencimento" target="_blank">Emitindo seu boleto...</span>';
-                                                    }elseif(date('Y-m-d', strtotime($parcela['dt_vencimento'])) < date('Y-m-d')){
-                                                        //$actionParc = '<span class="label label-warning" title="Seu boleto estará disponível 5 dias antes do vencimento" target="_blank">Emitindo seu boleto...</span>';
-                                                        $actionParc = '<a href_javascript="'.route('portal.formando.boleto',['parcela' => $parcela['id']]).'" class="label label-danger boleto-imprimir" target="_blank">Vencida</a>';
-                                                    }else{
-                                                        
-                                                        $actionParc = '<span onclick="aviso_vencimento()" class="label label-primary a-vencer-click" title="Seu boleto estará disponível 30 dias antes do vencimento" style="cursor: pointer ;">A Vencer</span>';
-                                                    }
-                                                }else{
-                                                        
-                                                        $actionParc = '<span onclick="aviso_vencimento()" class="label label-primary a-vencer-click" title="Seu boleto estará disponível 30 dias antes do vencimento" style="cursor: pointer ;">A Vencer</span>';
-                                                    }
-                                            }
-        
-        
-                                            ?>
-                                            <tr>
-                                                <td class="text-center">{{$parcela['numero_parcela']}}</td>
-                                                <td class="text-center">
-                                                    {{date('d/m/Y', strtotime($parcela['dt_vencimento']))}}</td>
-                                                <td class="text-center">{{number_format($parcela['valor'],2, ",", ".")}}
-                                                </td>
-                                                <td class="text-center"> {!! $actionParc !!} </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -330,7 +128,8 @@
     </div>
 
 </section>
-<script src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+
+<script src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
 
 <script>
     let cc = {};
