@@ -527,4 +527,18 @@ class ContratoAdminController extends Controller
         //@$vencs[$pagamentos->typepaind->due_date]+= ($pagamentos->valor_pago - 2.49);
 
     }
+
+    public function config_tipo_pagamento(Contract $contract){
+        return view('gerencial.contrato.admin.tipo_pagamento', compact('contract'));
+    }
+
+    public function store_tipo_pagamento(Request $request){
+
+      
+        $contract = Contract::find($request->contrato);
+        $contract->tipo_pagamento = $request->tipo_pagamento;
+        $contract->save();
+
+        return view('gerencial.contrato.admin.panel', ['contract' => $contract]);   
+     }
 }

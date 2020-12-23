@@ -209,6 +209,11 @@ Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth
 
     Route::get('contrato/admin/{contract}/finance', ['uses' => 'Gerencial\ContratoAdminController@finance2', 'as' => 'contrato.admin.finance']);
     Route::get('contrato/admin/{contract}/finance-month', ['uses' => 'Gerencial\ContratoAdminController@financeAccumulatedMonthToMonth', 'as' => 'contrato.admin.finance.month']);
+    Route::get('contrato/admin/{contract}/config_tipo_pagamento', ['uses' => 'Gerencial\ContratoAdminController@config_tipo_pagamento', 'as' => 'contrato.admin.config_tipo_pagamento']);
+    Route::post('contrato/admin/store_tipo_pagamento', ['uses' => 'Gerencial\ContratoAdminController@store_tipo_pagamento', 'as' => 'contrato.admin.store_tipo_pagamento']);
+
+    
+
 
     Route::get('orcamento/produtos', ['uses' => 'Gerencial\OrcamentoProdutoController@create', 'as' => 'orcamento.produto.create']);
     Route::get('orcamento/categorias', ['uses' => 'Gerencial\OrcamentoCategoriaController@create', 'as' => 'orcamento.categoria.create']);

@@ -82,6 +82,12 @@
                                 <p class="font-size-20">Brindes</p>
                             </a>
                         </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <a href="{{route('gerencial.contrato.admin.config_tipo_pagamento',['contract' => $contract->id])}}" class="btn btn-default font-size-80 width-250" style="background: #3C510C; margin-bottom: 30px;">
+                                <i class="icmn icmn-cog"></i>
+                                <p class="font-size-20">Configurações</p>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </section>
