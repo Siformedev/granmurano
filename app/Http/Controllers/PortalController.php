@@ -51,6 +51,7 @@ class PortalController extends Controller
 
     public function home()
     {
+        
         if (Auth::user()->userable_type == 'App\Collaborator') {
             return redirect()->route('gerencial.contratos');
         }
@@ -1884,7 +1885,12 @@ $parcelsModel->delete();
         $id_sessao = $pseg->geraSessao();
         //Alert::error('Ops!', 'oi');
         AuditAndLog::createLog(Auth::user()->id, 'Acessou Extrato Produtos: ' . $prod->name . ' - ID#' . $prod->id, 'null', Auth::user()->userable->contract_id);
-        return view('portal.extrato_produto_payment', compact('prod', 'parcelas', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'parce_max', 'sum_pags', 'id_sessao'));
+       
+        $dados_contrato = Contract::find(Auth::user()->userable->contract_id);
+
+        $tipo_pagamento = $dados_contrato->tipo_pagamento;
+       
+        return view('portal.extrato_produto_payment', compact('prod', 'parcelas', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'parce_max', 'sum_pags', 'id_sessao','tipo_pagamento'));
     }
 
 }
