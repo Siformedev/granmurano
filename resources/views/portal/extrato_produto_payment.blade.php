@@ -142,16 +142,16 @@
     
     PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');   
         
-    PagSeguroDirectPayment.onSenderHashReady(function(response){
+    // PagSeguroDirectPayment.onSenderHashReady(function(response){
     
-    if(response.status == 'error') {
-        console.log(response.message);
-        return false;
-    }
-    // hash = response.senderHash; //Hash estará disponível nesta variável.
-     $('#hash').val(response.senderHash);  
+    // if(response.status == 'error') {
+    //     console.log(response.message);
+    //     return false;
+    // }
+    // // hash = response.senderHash; //Hash estará disponível nesta variável.
+    //  $('#hash').val(response.senderHash);  
    
-     });
+    //  });
 
 $('.cc-numero').keyup(function(){    
     pagseguroValidateCard(this.value, false);
