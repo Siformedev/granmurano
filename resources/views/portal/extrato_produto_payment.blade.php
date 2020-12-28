@@ -347,6 +347,11 @@ function pagseguroValidateCard (element, bypassLengthTest) {
                 let url = "";
                 url = $(this).attr('href_javascript');
 
+                url += '/'+$('#hash').val();
+                    //this.href = url;
+                    console.log(url)
+                    location.replace(url);
+
 
                 if(url.length < 50){
                     // hash = $('#hash').val();
