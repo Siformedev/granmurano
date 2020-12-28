@@ -327,7 +327,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
 
 
                 PagSeguroDirectPayment.onSenderHashReady(function(response){
-                    console.log(response.senderHash);
+                    let rash = response.senderHash;
                 });
 
 
@@ -341,6 +341,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
             
 
             $(".boleto-imprimir").click(function (e) {
+                alert(rash);
                 let url = "";
                 url = $(this).attr('href_javascript');
 
