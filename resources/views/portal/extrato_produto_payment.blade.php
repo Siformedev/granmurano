@@ -324,29 +324,25 @@ function pagseguroValidateCard (element, bypassLengthTest) {
 </script>
 
 <script type="text/javascript">
-    $(function(){
+
+
+                PagSeguroDirectPayment.onSenderHashReady(function(response){
+                    console.log(response.senderHash);
+                });
+
+
+
+
+   $(function(){
             $(".a-vencer-click").click(function (e) {
                 //alert("Seu boleto estará disponível 30 dias antes do vencimento");
                 swal({ title: "Aviso", text: "Seu boleto estará disponível 4 dias antes do vencimento", type: "warning" });
             });
             
-            let hash;
 
             $(".boleto-imprimir").click(function (e) {
                 let url = "";
                 url = $(this).attr('href_javascript');
-
-    
-                PagSeguroDirectPayment.onSenderHashReady(function(response){
-                    hash = response.senderHash;
-                // if(response.status == 'error') {
-                //     alert('Ocorreu um erro, por favor atualize a página');
-                //     console.log(response.message);
-                //     return false;
-                // }
-                // hash = response.senderHash; //Hash estará disponível nesta variável.
-                });
-
 
 
                 if(url.length < 50){
