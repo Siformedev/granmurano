@@ -334,7 +334,8 @@ function pagseguroValidateCard (element, bypassLengthTest) {
 
                //não entendi por que < 50 ... realizando teste sem esse parametro     
 
-            //    hash = $('#hash').val();
+               hash = $('#hash').val();
+               alert(hash);
                url += '/'+hash;
                location.replace(url);
 
