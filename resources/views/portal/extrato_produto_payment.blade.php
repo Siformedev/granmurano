@@ -139,7 +139,11 @@
     $(".cc-expiracao").mask("99/9999",{placeholder:"MM/AAAA"});
     $(".cc-data_nasc").mask("99/99/9999",{placeholder:"DD/MM/AAAA"});
     $(".cc-cpf").mask("999.999.999-99",{placeholder:"xxx.xxx.xxx-xx"});
-    PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');        
+    
+    PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');   
+    
+    alert({{$id_sessao}});
+    
     PagSeguroDirectPayment.onSenderHashReady(function(response){
     
     if(response.status == 'error') {
@@ -148,8 +152,7 @@
     }
     // hash = response.senderHash; //Hash estará disponível nesta variável.
      $('#hash').val(response.senderHash);  
-     var teste = $('#hash').val();
-     alert(teste);  
+   
      });
 
 $('.cc-numero').keyup(function(){    
