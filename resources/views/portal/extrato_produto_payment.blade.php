@@ -142,15 +142,15 @@
     PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');        
     PagSeguroDirectPayment.onSenderHashReady(function(response){
     
-
-
     if(response.status == 'error') {
         console.log(response.message);
         return false;
     }
-    hash = response.senderHash; //Hash estará disponível nesta variável.
-    // $('#hash').val(response.senderHash);    
-    // });
+    // hash = response.senderHash; //Hash estará disponível nesta variável.
+     $('#hash').val(response.senderHash);  
+     var teste = $('#hash').val();
+     alert(teste);  
+     });
 
 $('.cc-numero').keyup(function(){    
     pagseguroValidateCard(this.value, false);
@@ -335,6 +335,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
                //não entendi por que < 50 ... realizando teste sem esse parametro     
 
                let hash = $('#hash').val();
+               
               
                url += '/'+hash;
                location.replace(url);
