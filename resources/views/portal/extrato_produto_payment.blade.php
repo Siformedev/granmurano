@@ -326,6 +326,9 @@ function pagseguroValidateCard (element, bypassLengthTest) {
             $(".boleto-imprimir").click(function (e) {
                 let url = "";
                 url = $(this).attr('href_javascript');
+
+                console.log(url);
+
                 if(url.length < 50){
                     hash = $('#hash').val();
                     url += '/'+hash;
