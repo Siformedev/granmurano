@@ -181,6 +181,7 @@ $( "#payment-form" ).submit(function( event ) {
 function bandeira_error(r){
  console.log("failed with status", r);
 }
+
 function token_success(r){
     //console.log(r)
     $('#token').val(r.card.token);
@@ -345,7 +346,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
         });
     
     PagSeguroDirectPayment.onSenderHashReady(function(response){
-        console.log(response);
+        console.log(response.senderHash);
     // if(response.status == 'error') {
     //     alert('Ocorreu um erro, por favor atualize a página');
     //     console.log(response.message);
