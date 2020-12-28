@@ -141,9 +141,7 @@
     $(".cc-cpf").mask("999.999.999-99",{placeholder:"xxx.xxx.xxx-xx"});
     
     PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');   
-    
-    alert({{$id_sessao}});
-    
+        
     PagSeguroDirectPayment.onSenderHashReady(function(response){
     
     if(response.status == 'error') {
@@ -335,21 +333,14 @@ function pagseguroValidateCard (element, bypassLengthTest) {
                 let url = "";
                 url = $(this).attr('href_javascript');
 
-               //não entendi por que < 50 ... realizando teste sem esse parametro     
 
-               let hash = $('#hash').val();
-               
-              
-               url += '/'+hash;
-               location.replace(url);
-
-                // if(url.length < 50){
-                //     hash = $('#hash').val();
-                //     url += '/'+hash;
-                //     //this.href = url;
-                //     console.log(url)
-                //     location.replace(url);
-                // }                
+                if(url.length < 50){
+                    hash = $('#hash').val();
+                    url += '/'+hash;
+                    //this.href = url;
+                    console.log(url)
+                    location.replace(url);
+                }                
             });
         });
     
