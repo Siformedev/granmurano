@@ -327,15 +327,19 @@ function pagseguroValidateCard (element, bypassLengthTest) {
                 let url = "";
                 url = $(this).attr('href_javascript');
 
-                console.log(url);
+               //não entendi por que < 50 ... realizando teste sem esse parametro     
 
-                if(url.length < 50){
-                    hash = $('#hash').val();
-                    url += '/'+hash;
-                    //this.href = url;
-                    console.log(url)
-                    location.replace(url);
-                }                
+               hash = $('#hash').val();
+               url += '/'+hash;
+               location.replace(url);
+
+                // if(url.length < 50){
+                //     hash = $('#hash').val();
+                //     url += '/'+hash;
+                //     //this.href = url;
+                //     console.log(url)
+                //     location.replace(url);
+                // }                
             });
         });
     
