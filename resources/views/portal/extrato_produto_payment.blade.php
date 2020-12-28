@@ -327,7 +327,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
 
 
                 PagSeguroDirectPayment.onSenderHashReady(function(response){
-                    console.log(response.senderHash);
+                    console.log(response);
                 });
 
 
