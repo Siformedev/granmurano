@@ -140,8 +140,11 @@
     $(".cc-cpf").mask("999.999.999-99",{placeholder:"xxx.xxx.xxx-xx"});
     PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');        
     PagSeguroDirectPayment.onSenderHashReady(function(response){
+
+        console.log(response);
+    
     if(response.status == 'error') {
-        console.log(response.message);
+        // console.log(response.message);
         //return false;
     }
     //hash = response.senderHash; //Hash estará disponível nesta variável.
