@@ -140,7 +140,7 @@
     PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');        
     PagSeguroDirectPayment.onSenderHashReady(function(response){
     if(response.status == 'error') {
-        //console.log(response.message);
+        console.log(response.message);
         //return false;
     }
     //hash = response.senderHash; //Hash estará disponível nesta variável.
