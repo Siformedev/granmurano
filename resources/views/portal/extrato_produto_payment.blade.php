@@ -330,7 +330,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
                     hash = $('#hash').val();
                     url += '/'+hash;
                     //this.href = url;
-                    //console.log(url)
+                    console.log(url)
                     location.replace(url);
                 }                
             });
