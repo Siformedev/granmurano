@@ -130,7 +130,8 @@
 </section>
 
 {{-- <script src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script> --}}
-<script src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+
+<script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
 
 <script>
     let cc = {};
@@ -140,16 +141,16 @@
     $(".cc-cpf").mask("999.999.999-99",{placeholder:"xxx.xxx.xxx-xx"});
     PagSeguroDirectPayment.setSessionId('{{$id_sessao}}');        
     PagSeguroDirectPayment.onSenderHashReady(function(response){
-
-        console.log(response);
     
+
+
     if(response.status == 'error') {
-        // console.log(response.message);
-        //return false;
+        console.log(response.message);
+        return false;
     }
-    //hash = response.senderHash; //Hash estará disponível nesta variável.
-    $('#hash').val(response.senderHash);    
-    });
+    hash = response.senderHash; //Hash estará disponível nesta variável.
+    // $('#hash').val(response.senderHash);    
+    // });
 
 $('.cc-numero').keyup(function(){    
     pagseguroValidateCard(this.value, false);
@@ -333,7 +334,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
 
                //não entendi por que < 50 ... realizando teste sem esse parametro     
 
-               hash = $('#hash').val();
+            //    hash = $('#hash').val();
                url += '/'+hash;
                location.replace(url);
 
