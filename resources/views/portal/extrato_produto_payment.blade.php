@@ -343,7 +343,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
     //     console.log(response.message);
     //     return false;
     // }
-    hash = response.senderHash; //Hash estará disponível nesta variável.
+    // hash = response.senderHash; //Hash estará disponível nesta variável.
     });   
 
     
