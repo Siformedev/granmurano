@@ -338,12 +338,12 @@ function pagseguroValidateCard (element, bypassLengthTest) {
     
     PagSeguroDirectPayment.onSenderHashReady(function(response){
         console.log(response);
-    if(response.status == 'error') {
-        alert('Ocorreu um erro, por favor atualize a página');
-        console.log(response.message);
-        return false;
-    }
-    //hash = response.senderHash; //Hash estará disponível nesta variável.
+    // if(response.status == 'error') {
+    //     alert('Ocorreu um erro, por favor atualize a página');
+    //     console.log(response.message);
+    //     return false;
+    // }
+    hash = response.senderHash; //Hash estará disponível nesta variável.
     });   
 
     
