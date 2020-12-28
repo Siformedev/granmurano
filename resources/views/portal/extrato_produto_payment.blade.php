@@ -127,6 +127,8 @@
         @endif
     </div>
 
+    {!! Form::hidden('hash', '', ['id'=>'hash']) !!}
+
 </section>
 
 {{-- <script src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script> --}}
@@ -327,7 +329,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
 
 
                 PagSeguroDirectPayment.onSenderHashReady(function(response){
-                    let rash = response.senderHash;
+                    $('#hash').val(response.senderHash); 
                 });
 
 
@@ -341,7 +343,7 @@ function pagseguroValidateCard (element, bypassLengthTest) {
             
 
             $(".boleto-imprimir").click(function (e) {
-                alert(rash);
+                alert($('#hash').val());
                 let url = "";
                 url = $(this).attr('href_javascript');
 
