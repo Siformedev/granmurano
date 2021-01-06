@@ -52,10 +52,18 @@ class PortalController extends Controller
     public function home()
     {
         
-        if (Auth::user()->userable_type == 'App\Collaborator') {
-            return redirect()->route('gerencial.contratos');
+        try {
+            if (Auth::user()->userable_type == 'App\Collaborator') {
+                return redirect()->route('gerencial.contratos');
+            }
+            
+            
+            return redirect()->route('portal.extrato');
+        } catch (\Throwable $th) {
+            return redirect()->route('login');
         }
-        return redirect()->route('portal.extrato');
+        
+       
     }
 
     public function extrato()

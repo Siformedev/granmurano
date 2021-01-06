@@ -23,9 +23,7 @@ class SiteController extends Controller
     protected function home()
     {
         
-
-
-//        Session::flash('warning', 'N�o foi poss�vel enviar a sua  mensagem');
+ //        Session::flash('warning', 'N�o foi poss�vel enviar a sua  mensagem');
 
 
 
@@ -33,6 +31,8 @@ class SiteController extends Controller
         //return view('site.home');
         return \View::make('site.home')->withSuccess('Task Created Successfully!');
         //return redirect('site.home')->withSuccess('Task Created Successfully!');
+
+        // return redirect()->action('${App\Http\Controllers\Auth\LoginController@login}');
 
 
     }
