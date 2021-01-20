@@ -50,7 +50,8 @@
                             //dd($dt_calc);
 
                             //echo date('Y-m-d', strtotime($parcela['dt_vencimento']));
-                            dd($tptype);
+                            //dd($tptype);
+                            {{$sumpg}}
                             if($sumpg >= $parcela['valor'] ){
                                 
                                 if($tptype == ''){
