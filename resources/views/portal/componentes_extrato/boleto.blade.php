@@ -51,7 +51,7 @@
 
                             //echo date('Y-m-d', strtotime($parcela['dt_vencimento']));
                             //dd($tptype);
-                  
+                            dd($sympg)
                             if($sumpg >= $parcela['valor'] ){
                                 
                                 if($tptype == ''){
