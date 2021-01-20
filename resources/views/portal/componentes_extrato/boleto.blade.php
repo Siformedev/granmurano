@@ -16,7 +16,7 @@
                             @foreach($parcelas as $parcela)
                             <?php
                         //dd($parcelas);
-                        //dd($pagamentos);
+                        dd($pagamentos);
                             $actionParc = '';
                             $sumpg = 0;
                             $tptype = '';
