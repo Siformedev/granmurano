@@ -1901,4 +1901,14 @@ $parcelsModel->delete();
         return view('portal.extrato_produto_payment', compact('prod', 'parcelas', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'parce_max', 'sum_pags', 'id_sessao','tipo_pagamento'));
     }
 
+    public function consultaAtivaBoleto(PagSeguroService $pseg){
+
+ 
+       
+        $notificationCode = '00C22320-AA64-4B82-B803-98C546D5683F';
+        $contrato_id=1;
+        $transaction = $pseg->consultarTransacao($notificationCode,$contrato_id);
+        dd($transaction);
+    }
+
 }

@@ -59,6 +59,8 @@ Route::get('adesao/concluido', ['uses' => 'adesaoController@concluido', 'as' => 
 
 Route::group(['prefix'=>'portal','as' => 'portal.', 'middleware' => 'auth'], function (){
 
+    Route::get('consultaAtivaBoleto',['uses'=>'PortalController@consultaAtivaBoleto']);
+
     Route::get('home', ['uses' => 'PortalController@home', 'as' => 'home']);
     Route::get('extrato', ['uses' => 'PortalController@extrato', 'as' => 'extrato']);
     Route::get('extrato/prod/{prod}', ['uses' => 'PortalController@extratoProduto', 'as' => 'extrato.produto']);
@@ -163,6 +165,8 @@ Route::group(['prefix'=>'comissao','as' => 'comissao.', 'middleware' => ['auth',
 });
 
 Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth', 'checkcollaborator']], function (){
+
+    
 
     Route::get('collaborator/create', ['uses' => 'Gerencial\CollaboratorController@create', 'as' => 'collaborator.create']);
     Route::post('collaborator/store', ['uses' => 'Gerencial\CollaboratorController@store', 'as' => 'collaborator.store']);
