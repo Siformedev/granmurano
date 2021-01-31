@@ -122,7 +122,7 @@ class PagSeguroService
     public function consultarTransacao($notificationCode, $contrato_id = null)
     {
         if (!empty($contrato_id)) {
-            self::__construct($contrato_id);
+            self::__construct($contrato_id); 
         }
 
         try {
