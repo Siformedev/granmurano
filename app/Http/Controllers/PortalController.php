@@ -1903,7 +1903,6 @@ $parcelsModel->delete();
 
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
-        $response = $this->client->get("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/00C22320-AA64-4B82-B803-98C546D5683F?email={$this->email}&token={$this->token}", []);
        
         $notificationCode = "00C22320-AA64-4B82-B803-98C546D5683F"; 
         $contrato_id=3;
