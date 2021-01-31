@@ -1904,7 +1904,8 @@ $parcelsModel->delete();
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
        
-        $notificationCode = "430AC13B-819D-4501-A981-B1E489DCBA65"; 
+        $notificationCode = "430AC13B-819D-4501-A981-B1E489DCBA65";
+        $contrato_id = 3; 
 
         $transaction = $pseg->consultarTransacao($notificationCode,$contrato_id);
         dd($transaction);
