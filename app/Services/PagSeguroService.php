@@ -126,8 +126,7 @@ class PagSeguroService
         }
 
         try {
-            // $response = $this->client->get("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/{$notificationCode}?email={$this->email}&token={$this->token}", []);
-            $response = $this->client->get("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/00C22320-AA64-4B82-B803-98C546D5683F?email={$this->email}&token={$this->token}", []);
+            $response = $this->client->get("https://ws.pagseguro.uol.com.br/v3/transactions/notifications/{$notificationCode}?email={$this->email}&token={$this->token}", []);
 
 
             $xml_string = $response->getBody()->getContents();
