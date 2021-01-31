@@ -1907,7 +1907,7 @@ $parcelsModel->delete();
        
         $notificationCode = "00C22320-AA64-4B82-B803-98C546D5683F"; 
         $contrato_id=3;
-        $transaction = $pseg->consultarTransacao('430AC13B-819D-4501-A981-B1E489DCBA65',$contrato_id);
+        $transaction = $pseg->consultarTransacao("430AC13B-819D-4501-A981-B1E489DCBA65",$contrato_id);
         dd($transaction);
     }
 
