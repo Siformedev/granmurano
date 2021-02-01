@@ -1903,7 +1903,7 @@ $parcelsModel->delete();
 
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
-        $boletos_pendentes = PagamentosBoleto::where('status','=','Pendente')->get();
+        $boletos_pendentes = PagamentosBoleto::where('status','=','paid')->get();
         $contrato_id = 3; 
 
         foreach ($boletos_pendentes as $key => $value) {
