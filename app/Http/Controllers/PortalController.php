@@ -1909,6 +1909,7 @@ $parcelsModel->delete();
  
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
+            $status_trn = $pseg->cod_status($transaction->status);
             $date = new DateTime($transaction->date);
             $paid_at = new DateTime($transaction->lastEventDate);
             
