@@ -1905,7 +1905,9 @@ $parcelsModel->delete();
 
         $boletos_pendentes = PagamentosBoleto::where('status','=','Pendente')->get();
 
-        dd($boletos_pendentes);
+        foreach ($boletos_pendentes as $key => $value) {
+            dd($value->invoice_id);
+        }
        
         $notificationCode = '13378DFB-53F7-4687-8FA8-40E907370ADD';
         $contrato_id = 3; 
