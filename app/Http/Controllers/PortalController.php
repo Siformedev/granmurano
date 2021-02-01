@@ -1909,7 +1909,13 @@ $parcelsModel->delete();
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
             $json = json_decode($transaction); 
-            dd($json->status); 
+            
+            if($json->status == 2){
+                $boletopago = PagamentosBoleto::find($value->id);
+                dd($boletopago);
+            } else{
+                dd("nenhum foi pago");
+            }
         }
        
         // $notificationCode = '13378DFB-53F7-4687-8FA8-40E907370ADD';
