@@ -1903,7 +1903,7 @@ $parcelsModel->delete();
 
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
-        $boletos_pendentes = PagamentosBoleto::all()->get();
+        $boletos_pendentes = PagamentosBoleto::all();
         $contrato_id = 3; 
 
         foreach ($boletos_pendentes as $key => $value) {
@@ -1912,7 +1912,7 @@ $parcelsModel->delete();
             
             if($json->status == '2'){ 
                 $boletopago = PagamentosBoleto::find($value->id);
-                dd($boletopago);
+                echo($boletopago);
             } else{
                 
             }
