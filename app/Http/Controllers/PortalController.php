@@ -1906,9 +1906,11 @@ $parcelsModel->delete();
         $boletos_pendentes = PagamentosBoleto::where('status','Pendente')->get();
         $contrato_id = 3; 
         $result=[];
-
+ 
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
+            $date = new DateTime($transaction->date);
+            $paid_at = new DateTime($transaction->lastEventDate);
             
             if ($transaction->status == 1) {
                 
