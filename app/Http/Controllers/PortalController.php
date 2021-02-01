@@ -1909,29 +1909,51 @@ $parcelsModel->delete();
 
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
-            $parcela = FormandoProdutosParcelas::find($transaction->reference);
-
-         
-
-          $result[$value->invoice_id]['parcela'] = $transaction->reference;  
-          $result[$value->invoice_id]['status'] = $transaction->status;  
-          
-          // if($json->status == '2'){ 
-            //     $boletopago = PagamentosBoleto::find($value->id);
-            //     echo($boletopago);
-            // } else{
+            
+            if ($transaction->status == 1) {
                 
-            // }
+                //formandos produto parcelas
+                $parcela = FormandoProdutosParcelas::find($transaction->reference);
+                $parcela->update(['status' => 1]);
+
+                //parcelas pagamentos (se não houver, cria)
+                $pagamento = ParcelasPagamentos::where('parcela_id', $parcela->id)->first();
+                if (!$pagamento) {
+                    $pagamento = ParcelasPagamentos::create(['parcela_id' => $parcela->id, 'valor_pago' => $transaction->grossAmount]);
+                } else {
+                    $pagamento->update(['valor_pago' => ($transaction->grossAmount), 'deleted' => 0]);
+                }
+
+                //pagamentos boleto
+                $dataInsert = [
+                    'valor_pago' => $transaction->grossAmount,
+                    'payable_with' => null,
+                    'due_date' => $date,
+                    'total_cents' => 0,
+                    'paid_cents' => 0,
+                    'status' => $status_trn,
+                    'paid_at' => $paid_at,
+                    'secure_url' => $transaction->paymentLink,
+                    'taxes_paid_cents' => 0,
+                    'deleted' => 0,
+                ];
+                $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id);
+                $pgBoleto->update($dataInsert);
+
+                $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
+
+                $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
+                $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
+
+                // fim das atualizações das tabelas
+        
+                $result[$value->invoice_id]['parcela'] = $transaction->reference;  
+                $result[$value->invoice_id]['status'] = $transaction->status;  
+            }
+           
         }
 
-        dd($result);
-       
-        // $notificationCode = '13378DFB-53F7-4687-8FA8-40E907370ADD';
-       
-
-        // $transaction = $pseg->consultarTransacao($notificationCode,$contrato_id);
-        // dd($transaction);
-
+    
         return view('relatorio_pagamento',compact('result'));
     }
 
