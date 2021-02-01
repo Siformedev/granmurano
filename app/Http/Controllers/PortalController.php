@@ -1914,7 +1914,7 @@ $parcelsModel->delete();
                 $boletopago = PagamentosBoleto::find($value->id);
                 dd($boletopago);
             } else{
-                dd("nenhum foi pago");
+                
             }
         }
        
