@@ -1905,12 +1905,13 @@ $parcelsModel->delete();
 
         $boletos_pendentes = PagamentosBoleto::where('status','Pendente')->get();
         $contrato_id = 3; 
+        $result=[];
 
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
-            $json = json_decode($transaction); 
+            $json = json_decode($transaction);  
 
-          $result=[];
+         
             
           $result[$value->invoice_id] = $json->status;  
           
