@@ -1910,9 +1910,11 @@ $parcelsModel->delete();
             $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
             $json = json_decode($transaction); 
 
-            dd($json->status);
+          $result=[];
             
-            // if($json->status == '2'){ 
+          $result[$value->invoice_id] = $json->status;  
+          
+          // if($json->status == '2'){ 
             //     $boletopago = PagamentosBoleto::find($value->id);
             //     echo($boletopago);
             // } else{
@@ -1925,6 +1927,8 @@ $parcelsModel->delete();
 
         // $transaction = $pseg->consultarTransacao($notificationCode,$contrato_id);
         // dd($transaction);
+
+        return view('relatorio_pagamento',compact('result'));
     }
 
 }
