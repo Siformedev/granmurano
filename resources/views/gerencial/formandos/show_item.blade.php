@@ -128,6 +128,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th class="text-center">Id<small>(formando produtos parcela)</small></th>
                                         <th class="text-center">Vencimento</th>
                                         <th class="text-center">Valor</th>
                                         <th class="text-center">Status</th>
@@ -168,6 +169,7 @@
 
                                     @endphp
                                     <tr>
+                                        <td class="text-center">{{$parcela['id']}}</td>
                                         <td class="text-center">{{date('d/m/Y', strtotime($parcela['dt_vencimento']))}}</td>
                                         <td class="text-center">{{number_format($parcela['valor'],2, ",", ".")}}</td>
                                         <td class="text-center"> {!! $actionParc !!} </td>
