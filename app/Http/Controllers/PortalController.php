@@ -1909,11 +1909,15 @@ $parcelsModel->delete();
 
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
-            $json = json_decode($transaction);  
+            $parcela = FormandoProdutosParcelas::find($transaction->reference);
+
+         
 
          
             
-          $result[$value->invoice_id] = $json->status;  
+          $result['invoice'] = $value->invoice_id;  
+          $result['referencia'] = $transaction->reference;  
+          $result['status'] = $transaction->status;  
           
           // if($json->status == '2'){ 
             //     $boletopago = PagamentosBoleto::find($value->id);
