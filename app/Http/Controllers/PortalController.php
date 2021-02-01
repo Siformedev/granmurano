@@ -1908,7 +1908,7 @@ $parcelsModel->delete();
         $result=[];
 
         foreach ($boletos_pendentes as $key => $value) {
-            $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
+            $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
             $parcela = FormandoProdutosParcelas::find($transaction->reference);
 
          
