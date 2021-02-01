@@ -1907,7 +1907,7 @@ $parcelsModel->delete();
         $contrato_id = 3; 
 
         foreach ($boletos_pendentes as $key => $value) {
-            $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
+            $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
             dd($transaction);
         }
        
