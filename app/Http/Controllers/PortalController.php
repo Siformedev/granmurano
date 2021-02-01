@@ -1916,7 +1916,7 @@ $parcelsModel->delete();
          
             
           $result['invoice'] = $value->invoice_id;  
-          $result['referencia'] = $transaction->reference;  
+          $result['parcela'] = $transaction->reference;  
           $result['status'] = $transaction->status;  
           
           // if($json->status == '2'){ 
