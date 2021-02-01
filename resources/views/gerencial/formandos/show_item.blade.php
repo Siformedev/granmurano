@@ -168,7 +168,7 @@
                                             }
                                         }
 
-                                    @endphp
+                                    @endphp 
                                     <tr>
                                         <td class="text-center">{{$parcela['id']}}</td>
                                         <td class="text-center">{{App\ParcelasPagamentos::select('typepaind_id,id')->where('parcela_id',$parcela['id'])->get()}}</td>
