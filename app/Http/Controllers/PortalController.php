@@ -1904,16 +1904,18 @@ $parcelsModel->delete();
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
         $boletos_pendentes = PagamentosBoleto::where('status','=','Pendente')->get();
-
-        foreach ($boletos_pendentes as $key => $value) {
-            dd($value->invoice_id);
-        }
-       
-        $notificationCode = '13378DFB-53F7-4687-8FA8-40E907370ADD';
         $contrato_id = 3; 
 
-        $transaction = $pseg->consultarTransacao($notificationCode,$contrato_id);
-        dd($transaction);
+        foreach ($boletos_pendentes as $key => $value) {
+            $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
+            dd($transaction);
+        }
+       
+        // $notificationCode = '13378DFB-53F7-4687-8FA8-40E907370ADD';
+       
+
+        // $transaction = $pseg->consultarTransacao($notificationCode,$contrato_id);
+        // dd($transaction);
     }
 
 }
