@@ -1915,9 +1915,9 @@ $parcelsModel->delete();
 
          
             
-          $result['invoice'] = $value->invoice_id;  
-          $result['parcela'] = $transaction->reference;  
-          $result['status'] = $transaction->status;  
+          $result[]['invoice'] = $value->invoice_id;  
+          $result[]['parcela'] = $transaction->reference;  
+          $result[]['status'] = $transaction->status;  
           
           // if($json->status == '2'){ 
             //     $boletopago = PagamentosBoleto::find($value->id);
