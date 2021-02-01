@@ -1934,7 +1934,7 @@ $parcelsModel->delete();
                     'due_date' => $date,
                     'total_cents' => 0,
                     'paid_cents' => 0,
-                    'status' => $status_trn,
+                    'status' => 'paid',
                     'paid_at' => $paid_at,
                     'secure_url' => $transaction->paymentLink,
                     'taxes_paid_cents' => 0,
