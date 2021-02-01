@@ -1908,7 +1908,7 @@ $parcelsModel->delete();
 
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
-            dd($transaction);
+            dd($transaction->status); 
         }
        
         // $notificationCode = '13378DFB-53F7-4687-8FA8-40E907370ADD';
