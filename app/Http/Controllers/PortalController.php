@@ -1910,7 +1910,7 @@ $parcelsModel->delete();
             $transaction = json_encode($pseg->consultarTransacao($value->invoice_id,$contrato_id));
             $json = json_decode($transaction); 
             
-            if($json->status == 2){
+            if($json->status == '7'){ 
                 $boletopago = PagamentosBoleto::find($value->id);
                 dd($boletopago);
             } else{
