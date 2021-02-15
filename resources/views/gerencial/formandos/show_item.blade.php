@@ -168,7 +168,7 @@
                                             }
                                         }
                                         
-                                        $parcela_pagamento_id = App\ParcelasPagamentos::where('parcela_id',$parcela['id'])->pluck('id')->get();
+                                        $parcela_pagamento_id = 1;
 
                                     @endphp 
                                     <tr>
