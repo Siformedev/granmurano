@@ -8,6 +8,7 @@ use App\FormandoProdutosParcelas;
 use App\Forming;
 use App\ParcelasPagamentos;
 use App\ProductAndService;
+use App\PagamentosBoleto;
 use App\ProdutosEServicosTermo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
