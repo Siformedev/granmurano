@@ -200,7 +200,7 @@ class FormandoAdminController extends Controller
             
             if($ret){
                 $pagamentos[$parcela['id']] = $ret;
-                $pagamentos[$parcela['id']['invoice']] = $pag_boleto->invoice_id;
+                $pagamentos[$parcela['invoice']] = $pag_boleto->invoice_id;
             }
 
         }
