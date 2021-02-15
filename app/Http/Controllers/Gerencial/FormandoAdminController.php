@@ -195,17 +195,17 @@ class FormandoAdminController extends Controller
         $pagamentos = [];
         foreach ($parcelas as $parcela){
 
-           dd($parcela['id']); 
-           
-            $ret = ParcelasPagamentos::where('parcela_id', $parcela['id'])->where('deleted', 0)->first();
            $id = $parcela['id'];
+           
+           $ret = ParcelasPagamentos::where('parcela_id', $id)->where('deleted', 0)->first();
+         
            $parcela_pagamento = ParcelasPagamentos::where('parcela_id',$id)->first();
            $invoice_pre = $parcela_pagamento['id'];
            $invoice_aux = PagamentosBoleto::where('parcela_pagamento_id',$invoice_pre)->first();
             
 
             if($ret){
-                $pagamentos[$parcela['id']] = $ret;
+                $pagamentos[$id] = $ret;
                 $pagamentos['invoice'] = $invoice_aux['invoice_id'];
             }
  
