@@ -201,11 +201,13 @@ class FormandoAdminController extends Controller
 
             if($ret){
                 $pagamentos[$parcela['id']] = $ret;
+                $pagamentos['invoice']= $invoice->invoice_id;
             }
 
         }
 
-  
+        dd($pagamentos);
+
         return view('gerencial.formandos.show_item', compact('prod','parcelas', 'termo', 'pagamentos', 'dateLimit', 'forming', 'contract'));
     }
 
