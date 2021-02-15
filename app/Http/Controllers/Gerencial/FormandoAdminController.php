@@ -187,7 +187,7 @@ class FormandoAdminController extends Controller
         ->leftJoin('pagamentos_boleto', function($join) {
             $join->on('pagamentos_boleto.parcela_pagamento_id', '=', 'parcelas_pagamentos.parcela_id');
           })  
-        ->where('formandos_produtos_id', $prod['id'])->get();
+        ->where('formandos_produtos_id', $prod['id'])->get()->toArray();
 
 
         $produtos = $prod->get()->toArray();
