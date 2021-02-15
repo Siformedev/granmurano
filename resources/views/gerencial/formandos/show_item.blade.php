@@ -134,6 +134,7 @@
                                         <th class="text-center">Data do pagamento</th>
                                         <th class="text-center">Vencimento</th>
                                         <th class="text-center">Valor</th>
+                                        <th class="text-center">Valor Pago</th>
                                         <th class="text-center">Status</th>
                                     </tr>
                                 </thead>
@@ -146,6 +147,7 @@
                                             $parc = $pagamentos[$parcela['id']];
                                             $sumpg = $parc->valor_pago;
                                         }
+
 
                                         if($sumpg >= $parcela['valor']){
                                         $actionParc = '<span class="label label-success">PAGO</span>';
@@ -178,9 +180,19 @@
                                         <td class="text-center">{{$parcela['id']}}</td>
                                         <td class="text-center">{{$parcela['invoice_id']}}</td>
                                         <td class="text-center">{{$parcela['status']}}</td>
-                                        <td class="text-center">{{$parcela['paid_at']}}</td>
+                                        
+                                        @if ($parcela['status']=='Cancelada' || is_null($parcela['status']))
+                                        <td class="text-center">-</td>  
+                                        @else
+                                        <td class="text-center">{{date('d/m/Y', strtotime($parcela['paid_at']))}}</td>   
+                                        @endif
+                                        
+                                      
                                         <td class="text-center">{{date('d/m/Y', strtotime($parcela['dt_vencimento']))}}</td>
                                         <td class="text-center">{{number_format($parcela['valor'],2, ",", ".")}}</td>
+                                        <td class="text-center">{{number_format($parcela['valor_pago'],2, ",", ".")}}</td>
+                                                                             
+                                       
                                         <td class="text-center"> {!! $actionParc !!} </td>
                                     </tr>
                                 @endforeach
