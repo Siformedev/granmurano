@@ -199,8 +199,8 @@ class FormandoAdminController extends Controller
            
            $ret = ParcelasPagamentos::where('parcela_id', $id)->where('deleted', 0)->first();
          
-           $parcela_pagamento = ParcelasPagamentos::where('parcela_id',$id)->first();
-           $invoice_pre = $parcela_pagamento['id'];
+           $parcela_pagamento = ParcelasPagamentos::where('parcela_id',$id)->first()->id;
+           $invoice_pre = $parcela_pagamento;
            $invoice_aux = PagamentosBoleto::where('parcela_pagamento_id',$invoice_pre)->first();
             
 
