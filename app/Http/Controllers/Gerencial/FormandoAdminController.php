@@ -197,16 +197,14 @@ class FormandoAdminController extends Controller
             $ret = ParcelasPagamentos::where('parcela_id', $parcela['id'])->where('deleted', 0)->first();
             $pag_boleto = PagamentosBoleto::where('parcela_pagamento_id',$ret->parcela_id)->get();
            
-             
+
             if($ret){
                 $pagamentos[$parcela['id']] = $ret;
-               
             }
 
         }
 
-        dd($pag_boleto);
-
+  
         return view('gerencial.formandos.show_item', compact('prod','parcelas', 'termo', 'pagamentos', 'dateLimit', 'forming', 'contract'));
     }
 
