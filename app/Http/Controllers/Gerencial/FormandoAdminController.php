@@ -215,7 +215,7 @@ class FormandoAdminController extends Controller
  
         }
 
-
+        dd($parcelas);
 
         return view('gerencial.formandos.show_item', compact('prod','parcelas', 'termo', 'pagamentos', 'dateLimit', 'forming', 'contract'));
     }
