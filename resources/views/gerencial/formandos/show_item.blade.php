@@ -128,7 +128,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">Id<small>(formando produtos parcela)</small></th>
+                                        <th class="text-center">Id<small>(parcela pagamento)</small></th>
                                         <th class="text-center">Ordem de pagamento</th>
                                         <th class="text-center">Status da transação</th>
                                         <th class="text-center">Data do pagamento</th>
@@ -177,7 +177,7 @@
                                                             
                                     @endphp 
                                     <tr>
-                                        <td class="text-center">{{$parcela['id']}}</td>
+                                        <td class="text-center">{{$parcela['parcela_pagamento_id']}}</td>
                                         <td class="text-center">{{$parcela['invoice_id']}}</td>
                                         <td class="text-center">{{$parcela['status']}}</td>
                                         
