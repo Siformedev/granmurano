@@ -168,17 +168,11 @@
                                             }
                                         }
                                         
-                                        $id = $parcela['id'];
-                                        $parcela_pagamento = App\ParcelasPagamentos::where('parcela_id',$id)->first();
-                                        $invoice_pre = $parcela_pagamento['id'];
-                                        $invoice_aux = App\PagamentosBoleto::where('parcela_pagamento_id',$invoice_pre)->first();
-                                        $invoice = $invoice_aux['invoice_id'];
-
-                                        
+                                                            
                                     @endphp 
                                     <tr>
                                         <td class="text-center">{{$parcela['id']}}</td>
-                                        <td class="text-center">{!! $invoice !!}</td>
+                                        {{-- <td class="text-center">{!! $invoice !!}</td> --}}
                                         <td class="text-center">{{date('d/m/Y', strtotime($parcela['dt_vencimento']))}}</td>
                                         <td class="text-center">{{number_format($parcela['valor'],2, ",", ".")}}</td>
                                         <td class="text-center"> {!! $actionParc !!} </td>
