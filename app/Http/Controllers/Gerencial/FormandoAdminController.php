@@ -195,7 +195,7 @@ class FormandoAdminController extends Controller
         $pagamentos = [];
         foreach ($parcelas as $parcela){
 
-           dd($parcela);
+           dd($parcela->id); 
            
             $ret = ParcelasPagamentos::where('parcela_id', $parcela['id'])->where('deleted', 0)->first();
            $id = $parcela['id'];
