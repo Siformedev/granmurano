@@ -167,12 +167,14 @@
 
                                             }
                                         }
+
+                                        
                                         
                                                             
                                     @endphp 
                                     <tr>
                                         <td class="text-center">{{$parcela['id']}}</td>
-                                        {{-- <td class="text-center">{!! $invoice !!}</td> --}}
+                                        <td class="text-center">{{$parcela['invoice_id']}}</td>
                                         <td class="text-center">{{date('d/m/Y', strtotime($parcela['dt_vencimento']))}}</td>
                                         <td class="text-center">{{number_format($parcela['valor'],2, ",", ".")}}</td>
                                         <td class="text-center"> {!! $actionParc !!} </td>

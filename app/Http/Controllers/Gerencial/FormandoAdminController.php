@@ -181,8 +181,14 @@ class FormandoAdminController extends Controller
         $forming = Forming::find($prod->forming_id);
 
           
-        $parcelas = FormandoProdutosParcelas::where('formandos_produtos_id', $prod['id'])->get()->toArray();
-        
+        $parcelas = FormandoProdutosParcelas::leftJoin('parcelas_pagamentos', function($join) {
+            $join->on('parcelas_pagamentos.parcela_id', '=', 'formandos_produtos_parcelas.id');
+          })
+        ->leftJoin('pagamentos_boleto', function($join) {
+            $join->on('pagamentos_boleto.parcela_pagamento_id', '=', 'parcelas_pagamentos.parcela_id');
+          })  
+        ->where('formandos_produtos_id', $prod['id'])->get();
+
 
         $produtos = $prod->get()->toArray();
         $termo = ProdutosEServicosTermo::where('id', $prod['termo_id'])->get()->toArray()[0];
@@ -199,20 +205,17 @@ class FormandoAdminController extends Controller
            
            $ret = ParcelasPagamentos::where('parcela_id', $id)->where('deleted', 0)->first();
          
-           $parcela_pagamento = ParcelasPagamentos::where('parcela_id',$id)->value('id');
-           $invoice_pre = $parcela_pagamento;
-           $invoice_aux = PagamentosBoleto::where('parcela_pagamento_id',$invoice_pre)->value('invoice_id');         
+   
 
             if($ret){
                 
-                $ret['invoice'] =   $invoice_aux;
                 $pagamentos[$id] = $ret;
              
             }
  
         }
 
-        dd($pagamentos);
+
 
         return view('gerencial.formandos.show_item', compact('prod','parcelas', 'termo', 'pagamentos', 'dateLimit', 'forming', 'contract'));
     }
