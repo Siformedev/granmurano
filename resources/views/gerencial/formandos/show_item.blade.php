@@ -168,7 +168,7 @@
                                             }
                                         }
                                         
-                                        $parcela_pagamento_id = 1;
+                              
 
                                     @endphp 
                                     <tr>
