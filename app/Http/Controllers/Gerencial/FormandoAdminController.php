@@ -202,7 +202,7 @@ class FormandoAdminController extends Controller
                 $pagamentos[$parcela['id']] = $ret;
 
             }
- 
+  
         }
 
   
