@@ -199,19 +199,21 @@ class FormandoAdminController extends Controller
            
            $ret = ParcelasPagamentos::where('parcela_id', $id)->where('deleted', 0)->first();
          
-           $parcela_pagamento = ParcelasPagamentos::where('parcela_id',$id)->first()->id;
+           $parcela_pagamento = ParcelasPagamentos::where('parcela_id',$id)->value('id');
            $invoice_pre = $parcela_pagamento;
-           $invoice_aux = PagamentosBoleto::where('parcela_pagamento_id',$invoice_pre)->first();
+           $invoice_aux = PagamentosBoleto::where('parcela_pagamento_id',$invoice_pre)->value('invoice_id');
+
+           dd($invoice_aux);
             
 
             if($ret){
                 $pagamentos[$id] = $ret;
-                $pagamentos['invoice'] = $invoice_aux['invoice_id'];
+             
             }
  
         }
 
-        dd($pagamentos);
+
 
         return view('gerencial.formandos.show_item', compact('prod','parcelas', 'termo', 'pagamentos', 'dateLimit', 'forming', 'contract'));
     }
