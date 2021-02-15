@@ -168,7 +168,8 @@
                                             }
                                         }
                                         
-                                        $parcela_pagamento = App\ParcelasPagamentos::where('parcela_id',$parcela['id'])->first();
+                                        $id = $parcela['id'];
+                                        $parcela_pagamento = App\ParcelasPagamentos::where('parcela_id',$id)->first();
                                         $invoice_pre = $parcela_pagamento['id'];
                                         $invoice_aux = App\PagamentosBoleto::where('parcela_pagamento_id',$invoice_pre)->first();
                                         $invoice = $invoice_aux['invoice_id'];
