@@ -130,6 +130,7 @@
                                     <tr>
                                         <th class="text-center">Id<small>(formando produtos parcela)</small></th>
                                         <th class="text-center">Ordem de pagamento</th>
+                                        <th class="text-center">Status da transação</th>
                                         <th class="text-center">Vencimento</th>
                                         <th class="text-center">Valor</th>
                                         <th class="text-center">Status</th>
@@ -175,6 +176,7 @@
                                     <tr>
                                         <td class="text-center">{{$parcela['id']}}</td>
                                         <td class="text-center">{{$parcela['invoice_id']}}</td>
+                                        <td class="text-center">{{$parcela['status']}}</td>
                                         <td class="text-center">{{date('d/m/Y', strtotime($parcela['dt_vencimento']))}}</td>
                                         <td class="text-center">{{number_format($parcela['valor'],2, ",", ".")}}</td>
                                         <td class="text-center"> {!! $actionParc !!} </td>
