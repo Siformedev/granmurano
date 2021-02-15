@@ -194,8 +194,9 @@ class FormandoAdminController extends Controller
 
         $pagamentos = [];
         foreach ($parcelas as $parcela){
-            $ret = ParcelasPagamentos::where('parcela_id', $parcela['id'])->where('deleted', 0)->first();
-           
+           $ret = ParcelasPagamentos::where('parcela_id', $parcela['id'])->where('deleted', 0)->first();
+           dd($ret->parcela_id);
+
            $invoice = PagamentosBoleto::where('parcela_pagamento_id',$ret->parcela_id)->first();
       
 
@@ -206,7 +207,7 @@ class FormandoAdminController extends Controller
 
         }
 
-        dd($invoice);
+  
 
         return view('gerencial.formandos.show_item', compact('prod','parcelas', 'termo', 'pagamentos', 'dateLimit', 'forming', 'contract'));
     }
