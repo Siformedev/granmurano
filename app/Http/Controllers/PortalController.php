@@ -1915,7 +1915,7 @@ $parcelsModel->delete();
             $date = new DateTime($transaction->date);
             $paid_at = new DateTime($transaction->lastEventDate);
 
-            dd($transaction);
+     
             
             if ($transaction->status == 1) {
                 
