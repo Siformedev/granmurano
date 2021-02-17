@@ -149,8 +149,9 @@
                                         }
 
 
-                                        if($sumpg >= $parcela['valor']){
-                                        $actionParc = '<span class="label label-success">PAGO</span>';
+                                        // if($sumpg >= $parcela['valor']){
+                                        if($parcela['status'] == 'paid'){
+                                           $actionParc = '<span class="label label-success">PAGO</span>';
                                         }elseif($sumpg <= 0){
 
                                             if(date('Y-m-d', strtotime($parcela['dt_vencimento'])) <= $dateLimit->format('Y-m-d')){
