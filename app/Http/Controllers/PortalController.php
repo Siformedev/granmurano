@@ -1914,6 +1914,8 @@ $parcelsModel->delete();
             $status_trn = $pseg->cod_status($transaction->status);
             $date = new DateTime($transaction->date);
             $paid_at = new DateTime($transaction->lastEventDate);
+
+            dd($transaction);
             
             if ($transaction->status == 1) {
                 
@@ -1955,7 +1957,7 @@ $parcelsModel->delete();
                 $result[$value->invoice_id]['parcela'] = $transaction->reference;  
                 $result[$value->invoice_id]['status'] = $transaction->status;
                 
-                dd($transaction);
+                
             }
            
         }
