@@ -189,7 +189,7 @@ class FormandoAdminController extends Controller
           })  
         ->where('formandos_produtos_id', $prod['id'])->get();
 
-        dd($parcelas);
+        
 
 
         $produtos = $prod->get()->toArray();
