@@ -192,9 +192,10 @@
                                         <td class="text-center">{{number_format($parcela['valor'],2, ",", ".")}}</td>
                                         
                                         @if ($parcela['status']=='Pendente' || is_null($parcela['status']))
-                                        <td class="text-center">{{number_format($parcela['valor_pago'],2, ",", ".")}}</td>
-                                        @else                                    
                                         <td class="text-center">{{number_format(0,2, ",", ".")}}</td>
+                                        @else                                    
+                                    
+                                        <td class="text-center">{{number_format($parcela['valor_pago'],2, ",", ".")}}</td>
                                         @endif
 
                                         <td class="text-center"> {!! $actionParc !!} </td>
