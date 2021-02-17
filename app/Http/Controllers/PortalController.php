@@ -1903,7 +1903,7 @@ $parcelsModel->delete();
 
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
-        $boletos_pendentes = PagamentosBoleto::where('invoice_id','<>','BOLETO-PAGO-MIGRACAO')->get();
+        $boletos_pendentes = PagamentosBoleto::where('invoice_id','E9AC7A6F-FC87-4621-A11D-89666F4B443E')->get();
        
         $contrato_id = 3; 
         $result=[];
@@ -1953,7 +1953,9 @@ $parcelsModel->delete();
                 // fim das atualizações das tabelas
         
                 $result[$value->invoice_id]['parcela'] = $transaction->reference;  
-                $result[$value->invoice_id]['status'] = $transaction->status;  
+                $result[$value->invoice_id]['status'] = $transaction->status;
+                
+                dd($result[$value->invoice_id]['status']);
             }
            
         }
