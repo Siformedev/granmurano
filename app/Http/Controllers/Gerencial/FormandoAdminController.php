@@ -183,7 +183,7 @@ class FormandoAdminController extends Controller
           
         $parcelas = FormandoProdutosParcelas::leftJoin('parcelas_pagamentos', function($join) {
             $join->on('parcelas_pagamentos.parcela_id', '=', 'formandos_produtos_parcelas.id');
-          })
+          })->where('parcelas_pagamentos.deleted', 0)
         ->leftJoin('pagamentos_boleto', function($join) {
             $join->on('pagamentos_boleto.parcela_pagamento_id', '=', 'parcelas_pagamentos.id');
           })  

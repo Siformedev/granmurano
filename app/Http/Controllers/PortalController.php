@@ -1903,12 +1903,14 @@ $parcelsModel->delete();
 
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
-        $boletos_pendentes = PagamentosBoleto::where('status','Pendente')->get();
+        $boletos_pendentes = PagamentosBoleto::where('invoice_id','<>','BOLETO-PAGO-MIGRACAO')->get();
+        dd($boletos_pendentes);
         $contrato_id = 3; 
         $result=[];
  
         foreach ($boletos_pendentes as $key => $value) {
             $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
+            dd($transaction);
             $status_trn = $pseg->cod_status($transaction->status);
             $date = new DateTime($transaction->date);
             $paid_at = new DateTime($transaction->lastEventDate);
