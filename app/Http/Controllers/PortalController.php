@@ -1903,74 +1903,109 @@ $parcelsModel->delete();
 
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
-        $boletos_pendentes = PagamentosBoleto::where('due_date','>','2021-02-04')->get();
+       //query de boletos a serem verificados 
+        $boletos_pendentes = PagamentosBoleto::where('status','Pendente')->get();
        
-        // dd($boletos_pendentes);
-
         $contrato_id = 3; 
-        $result=[];
- 
+        
+        //varrendo todos os boletos
         foreach ($boletos_pendentes as $key => $value) {
+
+            //realizando consulta da transação
             $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
-  
+            //guardando status da transação
             $status_trn = $pseg->cod_status($transaction->status);
+            //data da transação
             $date = new DateTime($transaction->date);
+            //data do pagamento
             $paid_at = new DateTime($transaction->lastEventDate);
 
-     
-            
-            if ($transaction->status == 4) {
-                
-                //formandos produto parcelas
+           //verificando a existencia da transaction->referncia
+            if( isset($transaction->reference) ){
                 $parcela = FormandoProdutosParcelas::find($transaction->reference);
-                $parcela->update(['status' => 1]);
+            }else{
+                dd($transaction->reference. 'trn nao encontrada');
+            }
+            //se não houver parcela 
+            if (!isset($parcela)) {
+                dd($parcela.'pagamento não entrando');
+            }
 
-                //parcelas pagamentos (se não houver, cria)
+            //se houver um status da transação guardar a descrição do status, o tipo de pagamento a data da transação e a data do pagamento
+            if (isset($transaction->status)) {
+                $status_trn = $pseg->cod_status($transaction->status);
+                $tipo_pagamento = $pseg->tipo_pagamento($transaction->paymentMethod->type);
+                $date = new DateTime($transaction->date);
+                $paid_at = new DateTime($transaction->lastEventDate);
+            } else {
+                dd($transaction.'não encontrada na verificação de status');
+            }
+
+            //se o status for recusado
+            if ($status_trn == 'Recusado') {
+
+                //update no status da parcela FormandoProdutosParcelas 
+                $parcela->update(['status' => 0]);
                 $pagamento = ParcelasPagamentos::where('parcela_id', $parcela->id)->first();
+    
+               //update para deleted 1 (cancelado ou recusado)
+                $pagamento->update(['valor_pago' => 0, 'deleted' => 1]);
+  
+                $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->first();  
+                $data = [
+                    'status' => $status_trn,
+                    'deleted' => 1,
+                ];
+    
+                $deleteBoleto = $pgBoleto->update($data);
+                $deleteParcelaPagamento = $pgBoleto->parcelaPagamento->update(['deleted' => 1]);
+    
+                // echo $deleteBoleto;
+                // echo $deleteParcelaPagamento;
+               
+            }       
+
+
+            // se o status for pago
+            if ($status_trn == 'Pago') {
+
+                //update no status da parcela
+                $parcela->update(['status' => 1]);
+                $pagamento = ParcelasPagamentos::where('parcela_id', $parcela->id)->first();
+    
                 if (!$pagamento) {
                     $pagamento = ParcelasPagamentos::create(['parcela_id' => $parcela->id, 'valor_pago' => $transaction->grossAmount]);
                 } else {
                     $pagamento->update(['valor_pago' => ($transaction->grossAmount), 'deleted' => 0]);
                 }
-
-                //pagamentos boleto
-                $dataInsert = [
-                    'valor_pago' => $transaction->grossAmount,
-                    'payable_with' => null,
-                    'due_date' => $date,
-                    'total_cents' => 0,
-                    'paid_cents' => 0,
-                    'status' => 'paid',
-                    'paid_at' => $paid_at,
-                    'secure_url' => $transaction->paymentLink,
-                    'taxes_paid_cents' => 0,
-                    'deleted' => 0,
-                ];
-                $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id);
-                $pgBoleto->update($dataInsert);
-
-                $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
-
-                $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
-                $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
-
-                // fim das atualizações das tabelas
-        
-                $result[$value->invoice_id]['parcela'] = $transaction->reference;  
-                $result[$value->invoice_id]['status'] = $transaction->status;
-
-
-                
-                
-            }
-
+    
+                if ($tipo_pagamento == "BOLETO") {
+                    $dataInsert = [
+                        'valor_pago' => $transaction->grossAmount,
+                        'payable_with' => null,
+                        'due_date' => $date,
+                        'total_cents' => 0,
+                        'paid_cents' => 0,
+                        'status' => $status_trn,
+                        'paid_at' => $paid_at,
+                        'secure_url' => $transaction->paymentLink,
+                        'taxes_paid_cents' => 0,
+                        'deleted' => 0,
+                    ];
+    
+                    $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id);
+                    $pgBoleto->update($dataInsert);
+    
+                    $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
+    
+                    $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
+                    $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
+                    
+                }
             
         }
 
-        dd($result);
-
     
-        return view('relatorio_pagamento',compact('result'));
     }
 
 }
