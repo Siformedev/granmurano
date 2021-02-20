@@ -1903,10 +1903,9 @@ $parcelsModel->delete();
 
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
-        $boletos_pendentes = PagamentosBoleto::where('invoice_id','F89C052F-48BE-459F-80B8-7C3BAA6EC42B')->get();
-        $transaction = $pseg->consultarTransacao('F89C052F-48BE-459F-80B8-7C3BAA6EC42B',3);
-
-        dd($transaction);
+        $boletos_pendentes = PagamentosBoleto::where('due_date','>','2021-02-04')->get();
+       
+        // dd($boletos_pendentes);
 
         $contrato_id = 3; 
         $result=[];
@@ -1920,7 +1919,7 @@ $parcelsModel->delete();
 
      
             
-            if ($transaction->status == 1) {
+            if ($transaction->status == 4) {
                 
                 //formandos produto parcelas
                 $parcela = FormandoProdutosParcelas::find($transaction->reference);
