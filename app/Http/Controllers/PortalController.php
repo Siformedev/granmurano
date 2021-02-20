@@ -1959,12 +1959,15 @@ $parcelsModel->delete();
                 $result[$value->invoice_id]['parcela'] = $transaction->reference;  
                 $result[$value->invoice_id]['status'] = $transaction->status;
 
-                echo $result[$value->invoice_id]['parcela'].'<br>';
+
                 
                 
             }
-           
+
+            
         }
+
+        dd($result);
 
     
         return view('relatorio_pagamento',compact('result'));
