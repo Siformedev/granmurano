@@ -1904,7 +1904,7 @@ $parcelsModel->delete();
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
         $boletos_pendentes = PagamentosBoleto::where('invoice_id','F89C052F-48BE-459F-80B8-7C3BAA6EC42B')->get();
-        $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
+        $transaction = $pseg->consultarTransacao('F89C052F-48BE-459F-80B8-7C3BAA6EC42B',3);
 
         dd($transaction);
 
