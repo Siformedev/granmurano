@@ -1958,6 +1958,8 @@ $parcelsModel->delete();
         
                 $result[$value->invoice_id]['parcela'] = $transaction->reference;  
                 $result[$value->invoice_id]['status'] = $transaction->status;
+
+                echo $result.'<br>';
                 
                 
             }
