@@ -1904,7 +1904,7 @@ $parcelsModel->delete();
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
        //query de boletos a serem verificados 
-        $boletos_pendentes = PagamentosBoleto::where('status','Pendente')->get();
+        $boletos_pendentes = PagamentosBoleto::where('invoice_id','<>','BOLETO-PAGO-MIGRACAO')->get();
        
         $contrato_id = 3; 
         
@@ -1954,11 +1954,24 @@ $parcelsModel->delete();
                 $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->first();  
                 $data = [
                     'status' => $status_trn,
-                    'deleted' => 1,
+                    // 'deleted' => 1,
                 ];
     
-                $deleteBoleto = $pgBoleto->update($data);
-                $deleteParcelaPagamento = $pgBoleto->parcelaPagamento->update(['deleted' => 1]);
+               try {
+                
+               
+
+                $pgBoleto->update($data);
+                   
+                $pgBoleto->parcelaPagamento->update(['deleted' => 1]);
+    
+                
+               } catch (\Throwable $th) {
+                 
+                   dd($pgBoleto);
+               }
+               
+               
     
                 // echo $deleteBoleto;
                 // echo $deleteParcelaPagamento;
@@ -1979,29 +1992,28 @@ $parcelsModel->delete();
                     $pagamento->update(['valor_pago' => ($transaction->grossAmount), 'deleted' => 0]);
                 }
     
-                if ($tipo_pagamento == "BOLETO") {
-                    $dataInsert = [
-                        'valor_pago' => $transaction->grossAmount,
-                        'payable_with' => null,
-                        'due_date' => $date,
-                        'total_cents' => 0,
-                        'paid_cents' => 0,
-                        'status' => $status_trn,
-                        'paid_at' => $paid_at,
-                        'secure_url' => $transaction->paymentLink,
-                        'taxes_paid_cents' => 0,
-                        'deleted' => 0,
-                    ];
-    
-                    $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id);
-                    $pgBoleto->update($dataInsert);
-    
-                    $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
-    
-                    $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
-                    $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
-                    
-                }
+                $dataInsert = [
+                    'valor_pago' => $transaction->grossAmount,
+                    'payable_with' => null,
+                    'due_date' => $date,
+                    'total_cents' => 0,
+                    'paid_cents' => 0,
+                    'status' => $status_trn,
+                    'paid_at' => $paid_at,
+                    'secure_url' => $transaction->paymentLink,
+                    'taxes_paid_cents' => 0,
+                    'deleted' => 0,
+                ];
+
+                $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id);
+                $pgBoleto->update($dataInsert);
+
+                $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
+
+                $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
+                $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
+            }       
+         
             
         }
 
