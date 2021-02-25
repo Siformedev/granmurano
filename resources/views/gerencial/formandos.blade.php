@@ -17,6 +17,7 @@
                             <table class="table table-hover nowrap dataTable dtr-inline table-responsive" id="table1">
                                 <thead>
                                 <tr>
+                                    <th>Id</th>
                                     <th>Nome</th>
                                     <th>Curso</th>
                                     <th>Periodo</th>
@@ -37,6 +38,7 @@
                                     }
                                     ?>
                                     <tr>
+                                        <td>{{$forming->id}}</td>
                                         <td><span class="font-size-16 font-weight-bold">{{$forming->nome}} {{$forming->sobrenome}}</span></td>
                                         <td>{{\App\Course::find($forming->curso_id)['name']}}</td>
                                         <td>{{$periodo}}</td>
