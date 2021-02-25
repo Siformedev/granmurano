@@ -1905,7 +1905,7 @@ $parcelsModel->delete();
 
        //query de boletos a serem verificados 
         $boletos_pendentes = PagamentosBoleto::where('status','')->get();
-        dd($boletos_pendentes);
+        //
 
 
         $contrato_id = 3; 
