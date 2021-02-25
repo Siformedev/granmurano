@@ -179,6 +179,7 @@
                                                             
                                     @endphp 
                                     <tr>
+                                        <td class="text-center">{{$parcela}}</td>
                                         <td class="text-center">{{$parcela['formandos_id']}}</td>
                                         <td class="text-center">{{$parcela['parcela_id']}}</td>
                                         <td class="text-center">{{$parcela['invoice_id']}}</td>
