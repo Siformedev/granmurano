@@ -60,6 +60,8 @@ Route::get('adesao/concluido', ['uses' => 'adesaoController@concluido', 'as' => 
 Route::group(['prefix'=>'portal','as' => 'portal.', 'middleware' => 'auth'], function (){
 
     Route::get('consultaAtivaBoleto',['uses'=>'PortalController@consultaAtivaBoleto']);
+    Route::get('consultaTransacao/{invoice_id}',['uses'=>'PortalController@consultaTransacao']);
+
 
     Route::get('home', ['uses' => 'PortalController@home', 'as' => 'home']);
     Route::get('extrato', ['uses' => 'PortalController@extrato', 'as' => 'extrato']);
