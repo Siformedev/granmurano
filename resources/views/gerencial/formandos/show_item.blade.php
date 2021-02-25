@@ -128,6 +128,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th class="text-center">Id Formando</th>
                                         <th class="text-center">Referencia PagSeguro</small></th>
                                         <th class="text-center">Ordem de pagamento</th>
                                         <th class="text-center">Status da transação</th>
@@ -178,7 +179,7 @@
                                                             
                                     @endphp 
                                     <tr>
-                                        <td class="text-center">{{$parcela}}</td>
+                                        <td class="text-center">{{$parcela['formandos_id']}}</td>
                                         <td class="text-center">{{$parcela['parcela_id']}}</td>
                                         <td class="text-center">{{$parcela['invoice_id']}}</td>
                                         <td class="text-center">{{$parcela['status']}}</td>
