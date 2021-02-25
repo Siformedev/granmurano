@@ -187,7 +187,7 @@
                                         <td class="text-center">{{$parcela['invoice_id']}}</td>
                                         <td class="text-center">{{$parcela['status']}}</td>
                                         
-                                        @if ($parcela['status']!='Pago' ))
+                                        @if ($parcela['status']!='Pago' )
                                         <td class="text-center">-</td>  
                                         @else
                                         <td class="text-center">{{date('d/m/Y', strtotime($parcela['paid_at']))}}</td>   
