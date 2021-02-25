@@ -1904,8 +1904,10 @@ $parcelsModel->delete();
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
        //query de boletos a serem verificados 
-        $boletos_pendentes = PagamentosBoleto::where('invoice_id','<>','BOLETO-PAGO-MIGRACAO')->get();
-       
+        $boletos_pendentes = PagamentosBoleto::where('status','')->get();
+        dd($boletos_pendentes);
+
+
         $contrato_id = 3; 
         
         //varrendo todos os boletos
