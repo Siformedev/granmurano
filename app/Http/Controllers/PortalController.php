@@ -2020,7 +2020,7 @@ $parcelsModel->delete();
     
     }
 
-    public function consultaTransacao($invoice_id){
+    public function consultaTransacao(PagSeguroService $pseg, $invoice_id){
         $contrato_id=3;
         $transaction = $pseg->consultarTransacao($invoice_id,$contrato_id);
         dd($transaction);
