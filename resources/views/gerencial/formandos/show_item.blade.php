@@ -152,7 +152,7 @@
 
 
                                         // if($sumpg >= $parcela['valor']){
-                                        if($parcela['status'] == 'paid'){
+                                        if($parcela['status'] == 'Pago'){
                                            $actionParc = '<span class="label label-success">PAGO</span>';
                                         }elseif($sumpg <= 0){
 
