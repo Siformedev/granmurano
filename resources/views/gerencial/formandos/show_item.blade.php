@@ -185,7 +185,7 @@
                                         <td class="text-center">{{$parcela['status']}}</td>
                                         @endif
                                             
-                                        @endif
+                                    
                                         
                                         <td class="text-center">{{$parcela['formandos_id']}}</td>
                                         <td class="text-center">{{$parcela['parcela_pagamento_id']}}</td>
