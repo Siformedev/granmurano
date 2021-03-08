@@ -152,6 +152,9 @@
 
 
                                         // if($sumpg >= $parcela['valor']){
+
+
+
                                         if($parcela['status'] == 'Pago'){
                                            $actionParc = '<span class="label label-success">PAGO</span>';
                                         }elseif($sumpg <= 0){
@@ -182,7 +185,7 @@
                                     <tr>
                                         @if ($parcela['invoice_id']=='FD67452A-1885-4873-9950-409593D65170')
 
-                                        <td class="text-center">{{$parcela['status']}}</td>
+                                        <td class="text-center">{{$parcela['status']}} / {{$parcela['dt_vencimento']}} / {{$dateLimit->format('Y-m-d')}}</td>
                                         @endif
                                             
                                     
