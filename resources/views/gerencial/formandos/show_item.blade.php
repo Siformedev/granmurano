@@ -184,10 +184,10 @@
                                                             
                                     @endphp 
                                     <tr>
-                                        @if ($parcela['invoice_id']=='FD67452A-1885-4873-9950-409593D65170')
+                                        {{-- @if ($parcela['invoice_id']=='FD67452A-1885-4873-9950-409593D65170')
 
                                         <td class="text-center">{{$parc}}</td>
-                                        @endif
+                                        @endif --}}
                                             
                                     
                                         
