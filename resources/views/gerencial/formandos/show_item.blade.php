@@ -180,6 +180,12 @@
                                                             
                                     @endphp 
                                     <tr>
+                                        @if ($parcela['invoice_id']=='FD67452A-1885-4873-9950-409593D65170')
+
+                                        <td class="text-center">{{$parcela['status']}}</td>
+                                        @endif
+                                            
+                                        @endif
                                         
                                         <td class="text-center">{{$parcela['formandos_id']}}</td>
                                         <td class="text-center">{{$parcela['parcela_pagamento_id']}}</td>
