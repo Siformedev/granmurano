@@ -1908,8 +1908,8 @@ $parcelsModel->delete();
         ->where('status','<>','Pago')
         ->get();
 
-        dd($boletos_pendentes);
-        //
+        
+        //dd($boletos_pendentes);
 
 
         $contrato_id = 3; 
