@@ -1904,7 +1904,11 @@ $parcelsModel->delete();
     public function consultaAtivaBoleto(PagSeguroService $pseg){
 
        //query de boletos a serem verificados 
-        $boletos_pendentes = PagamentosBoleto::where('due_date','>','2021-02-26')->get();
+        $boletos_pendentes = PagamentosBoleto::where('due_date','>','2021-02-19')
+        ->where('status','<>','Pago')
+        ->get();
+
+        dd($boletos_pendentes);
         //
 
 
