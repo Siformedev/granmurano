@@ -1988,6 +1988,8 @@ $parcelsModel->delete();
             // se o status for pago
             if ($status_trn == 'Pago') {
 
+               
+
                 //update no status da parcela
                 $parcela->update(['status' => 1]);
                 $pagamento = ParcelasPagamentos::where('parcela_id', $parcela->id)->first();
@@ -2018,6 +2020,11 @@ $parcelsModel->delete();
 
                 $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
                 $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
+
+
+                $formandos_parcela = FormandoProdutosParcelas::find($parcelaPagamento->parcela_id);
+                $formandos_parcela->update(['status'=>1]) ;
+
             }       
          
             
