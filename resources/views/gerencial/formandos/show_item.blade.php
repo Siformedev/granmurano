@@ -184,11 +184,7 @@
                                                             
                                     @endphp 
                                     <tr>
-                                      @if ($parcela['invoice_id']=='01082B57-91C6-4069-94A6-FDDF8A922226')
-
-                                        <td class="text-center">{{$parc}}</td>
-                                        @endif
-                                            
+                                      
                                     
                                         
                                         <td class="text-center">{{$parcela['formandos_id']}}</td>
