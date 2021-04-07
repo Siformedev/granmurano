@@ -406,9 +406,13 @@ class ContratoAdminController extends Controller
         $total['pago'] = 0;
         $total_forming['parcela'] = 0;
         $total_forming['pago'] = 0;
-        $total_parcela = 0;
+        
+        
+        $total_parcela = DB::table('formandos_produtos_parcelas')
+        ->where('status',1)
+        ->sum('valor');
 
-        $formings_data = [];
+       $formings_data = [];
 
         $formings = Forming::where('contract_id', $contract->id)->get();
         foreach ($formings as $forming) {
@@ -451,10 +455,12 @@ class ContratoAdminController extends Controller
             }
 
             $formings_data[$forming->id]['parcela'] = $total_forming['parcela'];
-            $total_parcela = $total_parcela + $total_forming['parcela'];
             $formings_data[$forming->id]['pago'] = $total_forming['pago'];
+
             $total_forming['parcela'] = 0;
             $total_forming['pago'] = 0;
+
+
         }
 
         // dd($formings_data);
