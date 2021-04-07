@@ -408,7 +408,7 @@ class ContratoAdminController extends Controller
         $total_forming['pago'] = 0;
         
         
-        $total_parcela = DB::table('formandos_produtos_parcelas')
+        $total_parcela = \DB::table('formandos_produtos_parcelas')
         ->where('status',1)
         ->sum('valor');
 
