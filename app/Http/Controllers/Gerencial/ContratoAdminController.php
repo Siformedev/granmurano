@@ -410,7 +410,7 @@ class ContratoAdminController extends Controller
         
         $total_parcela = \DB::table('formandos_produtos_parcelas')
         ->where('status',1)
-        ->sum('valor');
+        ->get();
 
         dd($total_parcela);
 
