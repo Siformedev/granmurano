@@ -406,6 +406,7 @@ class ContratoAdminController extends Controller
         $total['pago'] = 0;
         $total_forming['parcela'] = 0;
         $total_forming['pago'] = 0;
+        $total_parcela = 0;
 
         $formings_data = [];
 
@@ -450,6 +451,7 @@ class ContratoAdminController extends Controller
             }
 
             $formings_data[$forming->id]['parcela'] = $total_forming['parcela'];
+            $total_parcela = $total_parcela + $total_forming['parcela'];
             $formings_data[$forming->id]['pago'] = $total_forming['pago'];
             $total_forming['parcela'] = 0;
             $total_forming['pago'] = 0;
@@ -457,7 +459,7 @@ class ContratoAdminController extends Controller
 
         // dd($formings_data);
 
-        return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total'));
+        return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total','total_parcela'));
     }
 
     public function financeAccumulatedMonthToMonth(Request $request, Contract $contract)

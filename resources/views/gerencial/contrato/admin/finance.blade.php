@@ -87,7 +87,8 @@
                             <tr>
                                 <td><b>TOTAL</b></td>
                                 <td><b>R$ {{number_format($total['parcela'], 2, ",", ".")}}</b></td>
-                                <td><b>R$ {{number_format($sumBoleto, 2, ",", ".")}}</b></td>
+                                {{-- <td><b>R$ {{number_format($sumBoleto, 2, ",", ".")}}</b></td> --}}
+                                <td><b>R$ {{number_format($total_parcela, 2, ",", ".")}}</b></td>
                                 <td><b>R$ {{number_format($sumCartao, 2, ",", ".")}}</b></td>
                                 <td><b>R$ {{number_format($sumTaxa, 2, ",", ".")}}</b></td>
                                 <td><b>R$ {{number_format($total['pago'], 2, ",", ".")}}</b></td>
