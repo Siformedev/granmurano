@@ -16,6 +16,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\DB;
+
 
 class ContratoAdminController extends Controller
 {
@@ -408,8 +410,9 @@ class ContratoAdminController extends Controller
         $total_forming['pago'] = 0;
         
         
-        $total_parcela = FormandoProdutosParcelas::where('status', 1)->get();
-
+        $total_parcela = DB::table('formandos_produtos_parcelas')
+        ->where('status', 1)
+        ->sum('valor');
 
         dd($total_parcela);
 
