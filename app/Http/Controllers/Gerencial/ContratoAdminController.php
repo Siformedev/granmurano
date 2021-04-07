@@ -409,8 +409,9 @@ class ContratoAdminController extends Controller
         
         
         $total_parcela = \DB::table('formandos_produtos_parcelas')
-        ->where('status',1)
-        ->sum('valor');
+        ->where('status',1);
+
+        dd($total_parcela);
 
        $formings_data = [];
 
