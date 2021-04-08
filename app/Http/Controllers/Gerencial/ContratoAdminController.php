@@ -414,7 +414,7 @@ class ContratoAdminController extends Controller
         ->where('status', 1)
         ->sum('valor');
 
-        dd($total_parcela);
+        
 
        $formings_data = [];
 
