@@ -47,7 +47,7 @@
                             //echo '<br>';
                             //echo date("Y-m-d",$dt_calc);
                             //echo '<br>';
-                            //dd($dt_calc);
+                            dd($dt_calc);
 
                             //echo date('Y-m-d', strtotime($parcela['dt_vencimento']));
                             //dd($tptype);
