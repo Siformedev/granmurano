@@ -47,7 +47,7 @@
                             //echo '<br>';
                             //echo date("Y-m-d",$dt_calc);
                             //echo '<br>';
-                            dd($dt_calc);
+                            //dd($dt_calc);
 
                             //echo date('Y-m-d', strtotime($parcela['dt_vencimento']));
                             //dd($tptype);
@@ -106,7 +106,7 @@
                                         $actionParc = '<a href_javascript="'.route('portal.formando.boleto',['parcela' => $parcela['id']]).'" class="label label-warning boleto-imprimir" target="_blank">Imprimir</a>';
                                         
                                         //$actionParc = '<span class="label label-warning" title="Seu boleto estará disponível 5 dias antes do vencimento" target="_blank">Emitindo seu boleto...</span>';
-                                    }elseif(date('Y-m-d', strtotime($parcela['dt_vencimento'])) < date('Y-m-d')){
+                                    }elseif(date('Y-m-d', strtotime($parcela['dt_vencimento'])) < date('Y-m-d') && $parc->valor_pago<$parcela['valor']){
                                         //$actionParc = '<span class="label label-warning" title="Seu boleto estará disponível 5 dias antes do vencimento" target="_blank">Emitindo seu boleto...</span>';
                                         $actionParc = '<a href_javascript="'.route('portal.formando.boleto',['parcela' => $parcela['id']]).'" class="label label-danger boleto-imprimir" target="_blank">Vencida</a>';
                                     }else{
