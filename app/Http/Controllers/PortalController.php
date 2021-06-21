@@ -2015,20 +2015,10 @@ $parcelsModel->delete();
 
                 $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id);
                 $pgBoleto->update($dataInsert);
-
-                $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
-
-              
-              try {
-                $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
-                $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
-              } catch (\Throwable $th) {
-                 dd("parcela pagamento não localizado ".$pagamento);
-              }
-                
+               
 
 
-                $formandos_parcela = FormandoProdutosParcelas::find($parcelaPagamento->parcela_id);
+                $formandos_parcela = FormandoProdutosParcelas::find($pagamento->parcela_id);
                 $formandos_parcela->update(['status'=>1]) ;
 
             }       
