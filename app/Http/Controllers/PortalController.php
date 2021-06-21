@@ -2018,7 +2018,7 @@ $parcelsModel->delete();
 
                 $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
 
-                // dd($pgBoletoGet);
+                dd($pgBoletoGet);
                 $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
                 $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
 
