@@ -2023,7 +2023,7 @@ $parcelsModel->delete();
                 $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
                 $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
               } catch (\Throwable $th) {
-                 dd($pgBoletoGet->parcela_pagamento_id."/");
+                 dd("parcela pagamento não localizado ".$pagamento);
               }
                 
 
