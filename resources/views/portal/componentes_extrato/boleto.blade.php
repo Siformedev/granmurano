@@ -77,7 +77,7 @@
                                     }
                                     elseif( isset($parc->typepaind_type) && $parc->typepaind_type == 'App\PagamentosCartao'){
                                         
-    //comentado para testes
+                                    //comentado para testes
                                     // if($pgto['status'] == 'Recusado'){
                                     //     $actionParc = '<a  class="label label-danger" target="_blank"> Cartão '.$pgto['status'].' </a>';
                                     // }else{
@@ -85,7 +85,7 @@
                                     //     $disable_cc_pgto = true;
                                     // }
                                             
-                                }elseif( $dt_calc <= 345600 && $dt_calc >= 0 ){
+                                    }elseif( $dt_calc <= 345600 && $dt_calc >= 0 ){
                                     
                                     
                                     //dd($dateLimit->format('Y-m-d'));
@@ -103,7 +103,7 @@
                                     echo $x-$y;
                                     //echo date('Y-m-d', strtotime($parcela['dt_vencimento'])) -date('Y-m-d');
                                     exit;
-*/
+                                    */
                                         $actionParc = '<a href_javascript="'.route('portal.formando.boleto',['parcela' => $parcela['id']]).'" class="label label-warning boleto-imprimir" target="_blank">Imprimir</a>';
                                         
                                         //$actionParc = '<span class="label label-warning" title="Seu boleto estará disponível 5 dias antes do vencimento" target="_blank">Emitindo seu boleto...</span>';
@@ -117,7 +117,7 @@
                                 }else{
                                         
                                         $actionParc = '<span onclick="aviso_vencimento()" class="label label-primary a-vencer-click" title="Seu boleto estará disponível 30 dias antes do vencimento" style="cursor: pointer ;">A Vencer</span>';
-                                    }
+                                }
                             }
 
 

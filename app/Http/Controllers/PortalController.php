@@ -1879,7 +1879,7 @@ $parcelsModel->delete();
         $saldo_pagar = ($prod->valorFinal() - $valor_pago_p);
 
         $date = Carbon::now();
-        $dateLimit = Carbon::now();
+        $dateLimit = Carbon::now(); //para deixar o boleto disp
         $dateLimit->addDays(40);
 
         //dd($valor_pago, $valor);
@@ -2018,6 +2018,7 @@ $parcelsModel->delete();
 
                 $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
 
+                dd($pgBoletoGet);
                 $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
                 $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
 

@@ -415,7 +415,6 @@ class ContratoAdminController extends Controller
         ->sum('valor');
 
         
-
        $formings_data = [];
 
         $formings = Forming::where('contract_id', $contract->id)->get();
