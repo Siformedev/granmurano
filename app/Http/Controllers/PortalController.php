@@ -1909,7 +1909,7 @@ $parcelsModel->delete();
         ->get();
 
         
-        //dd($boletos_pendentes);
+        dd($boletos_pendentes);
 
 
         $contrato_id = 3; 
