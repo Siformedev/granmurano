@@ -1974,7 +1974,7 @@ $parcelsModel->delete();
                 
                } catch (\Throwable $th) {
                  
-                   dd($pgBoleto);
+                   dd($pgBoleto." pagamento recusado");
                }
                
                
