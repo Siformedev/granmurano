@@ -2018,9 +2018,14 @@ $parcelsModel->delete();
 
                 $pgBoletoGet = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->get()->first();
 
-                dd($pgBoleto);
+              
+              try {
                 $parcelaPagamento = ParcelasPagamentos::find($pgBoletoGet->parcela_pagamento_id);
                 $parcelaPagamento->update(['valor_pago' => $transaction->grossAmount, 'deleted' => 0]);
+              } catch (\Throwable $th) {
+                 dd($pgBoletoGet->parcela_pagamento_id."/")
+              }
+                
 
 
                 $formandos_parcela = FormandoProdutosParcelas::find($parcelaPagamento->parcela_id);
