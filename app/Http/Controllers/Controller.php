@@ -10,4 +10,10 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    protected $helper;
+    //protected $forming;
+
+    protected function __construct() {
+        $this->helper = new \App\Helpers\MainHelper();
+    }
 }

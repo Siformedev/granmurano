@@ -33,10 +33,10 @@ Route::group(['prefix'=>'/','middleware' => 'web'], function (){
         include public_path().'/retorno_auth_pseg.php';
     });
 });
-
-
-
-/*TESTE*/
+Route::match(['get', 'post'], '/comissao/formandosadiplentes', 'ComissaoController@formandosadiplentes');
+Route::match(['get', 'post'], '/comissao/formandosinadiplentes', 'ComissaoController@formandosinadiplentes');
+Route::match(['get', 'post'], '/comissao/formandospendentes', 'ComissaoController@formandospendentes');
+/* TESTE */
 Route::get('teste/t1', ['uses' => 'TesteController@t1', 'as' => 'teste.t1']);
 Route::get('test/slack', ['uses' => 'TesteController@testSlack', 'as' => 'test.slack']);
 
@@ -65,6 +65,7 @@ Route::group(['prefix'=>'portal','as' => 'portal.', 'middleware' => 'auth'], fun
 
     Route::get('home', ['uses' => 'PortalController@home', 'as' => 'home']);
     Route::get('extrato', ['uses' => 'PortalController@extrato', 'as' => 'extrato']);
+    Route::get('extrato/cancel/{prod}', ['uses' => 'PortalController@cancel', 'as' => 'extrato.cancel']);
     Route::get('extrato/prod/{prod}', ['uses' => 'PortalController@extratoProduto', 'as' => 'extrato.produto']);
     Route::get('extrato/prod-pay-credit/{prod}', ['uses' => 'PortalController@extratoProdutoPayCredit', 'as' => 'extrato.produto.paycredit']);
     Route::get('extrato/payment/{prod}', ['uses' => 'PortalController@extratoProdutoPayCredit2', 'as' => 'extrato.produto.payment']);
@@ -131,12 +132,13 @@ Route::group(['prefix'=>'portal','as' => 'portal.', 'middleware' => 'auth'], fun
 });
 
 Route::get('raffle/number/{hash}', ['uses' => 'PortalController@raffleNumberHash', 'as' => 'raffle.number.hash']);
-
-Route::group(['prefix'=>'comissao','as' => 'comissao.', 'middleware' => ['auth', 'checkcomissao']], function (){
-
+Route::group(['prefix' => 'comissao', 'as' => 'comissao.', 'middleware' => ['auth', 'checkcomissao']], function () {
+    Route::get('logs', ['uses' => 'ComissaoController@logs', 'as' => 'logs']);
     Route::get('painel', ['uses' => 'ComissaoController@painel', 'as' => 'painel']);
 
     Route::get('formandos', ['uses' => 'ComissaoController@formandos', 'as' => 'formandos']);
+    Route::get('formandos/exportexcell', ['uses' => 'ComissaoController@exportexcell', 'as' => 'exportexcell']);
+    Route::get('formandos/printpapper', ['uses' => 'ComissaoController@printpapper', 'as' => 'printpapper']);
     Route::get('formandos/canceled', ['uses' => 'ComissaoController@formandosCanceled', 'as' => 'formandos.canceled']);
     Route::get('formandos/{forming}', ['uses' => 'ComissaoController@formandosShow', 'as' => 'formandos.show']);
     Route::get('formandos/extrato/{prod}', ['uses' => 'ComissaoController@formandosShowItem', 'as' => 'formandos.show.item']);
@@ -165,11 +167,8 @@ Route::group(['prefix'=>'comissao','as' => 'comissao.', 'middleware' => ['auth',
     Route::get('lojinha/venda/{id}', ['uses' => 'ComissaoController@lojinhaVendaDetalhes', 'as' => 'lojinha.venda.detalhes']);
     Route::get('lojinha/venda/print/{id}', ['uses' => 'ComissaoController@lojinhaPedidoImprimir', 'as' => 'lojinha.venda.print']);
 });
-
-Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth', 'checkcollaborator']], function (){
-
-    
-
+Route::group(['prefix' => 'gerencial', 'as' => 'gerencial.', 'middleware' => ['auth', 'checkcollaborator']], function () {
+    Route::get('reportfinance', ['uses' => 'Gerencial\ReportfinanceController@index', 'as' => 'reportfinance.index']);
     Route::get('collaborator/create', ['uses' => 'Gerencial\CollaboratorController@create', 'as' => 'collaborator.create']);
     Route::post('collaborator/store', ['uses' => 'Gerencial\CollaboratorController@store', 'as' => 'collaborator.store']);
     Route::get('collaborator', ['uses' => 'Gerencial\CollaboratorController@index', 'as' => 'collaborator.index']);
@@ -177,22 +176,36 @@ Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth
     Route::post('collaborator/update/{collaborator}', ['uses' => 'Gerencial\CollaboratorController@update', 'as' => 'collaborator.update']);
 
     //Formandos
+    Route::get('formandos/exportexcell', ['uses' => 'Gerencial\FormandoAdminController@exportexcell', 'as' => 'exportexcell']);
+    Route::get('formandos/printpapper', ['uses' => 'Gerencial\FormandoAdminController@printpapper', 'as' => 'formandos.printpapper']);
     Route::get('formandos', ['uses' => 'Gerencial\FormandoAdminController@index', 'as' => 'formandos']);
+    Route::post('formando/getparcela/{id}', ['uses' => 'Gerencial\FormandoAdminController@getParcela', 'as' => 'editaparcela']);
+    Route::post('formando/editparcela/{id}', ['uses' => 'Gerencial\FormandoAdminController@editParcela', 'as' => 'formando.editparcela']);
+    Route::post('formando/removeparcela/{id}', ['uses' => 'Gerencial\FormandoAdminController@removeParcela', 'as' => 'formando.removeparcela']);
     Route::get('formando/{forming}', ['uses' => 'Gerencial\FormandoAdminController@show', 'as' => 'formando.show']);
     Route::get('formando/extrato/{prod}', ['uses' => 'Gerencial\FormandoAdminController@showItem', 'as' => 'formando.show.item']);
     Route::get('formando/login/{forming}', ['uses' => 'Gerencial\FormandoAdminController@forceLogin', 'as' => 'formando.login']);
-
-
-
+    Route::post('budget/store/{idcontract}/{id2}', ['uses' => 'Gerencial\BudgetController@store', 'as' => 'budget.store']);
+    Route::get('budget/delete/{id}', ['uses' => 'Gerencial\BudgetController@delete', 'as' => 'budget.delete']);
+    Route::get('budget/create/{id}/{contract}', ['uses' => 'Gerencial\BudgetController@create', 'as' => 'budget.create']);
+    Route::get('budget/{contract}/index', ['uses' => 'Gerencial\BudgetController@index', 'as' => 'contrato.budget']);
+    Route::post('brindes/store/{idcontract}/{id2}', ['uses' => 'Gerencial\BrindesController@store', 'as' => 'brindes.store']);
+    Route::get('brindes/delete/{id}', ['uses' => 'Gerencial\BrindesController@delete', 'as' => 'brindes.delete']);
+    Route::get('brindes/create/{id}/{contract}', ['uses' => 'Gerencial\BrindesController@create', 'as' => 'brindes.create']);
+    Route::get('brindes/{contract}/index', ['uses' => 'Gerencial\BrindesController@index', 'as' => 'contrato.brindes']);
+    Route::post('contratocomissao/store/{idcontract}/{id2}', ['uses' => 'Gerencial\ContratocomissaoController@store', 'as' => 'contratocomissao.store']);
+    Route::get('contratocomissao/delete/{id}', ['uses' => 'Gerencial\ContratocomissaoController@delete', 'as' => 'contratocomissao.delete']);
+    Route::get('contratocomissao/create/{id}/{contract}', ['uses' => 'Gerencial\ContratocomissaoController@create', 'as' => 'contratocomissao.create']);
+    Route::get('contratocomissao/{contract}/index', ['uses' => 'Gerencial\ContratocomissaoController@index', 'as' => 'contrato.contratocomissao']);
+    Route::get('brindesretirados/create/{brinde}/{formando}/{contractid}', ['uses' => 'Gerencial\BrindesController@retirarbrinde', 'as' => 'brindesretirados.create']);
     Route::get('contratos', ['uses' => 'Gerencial\ContratoController@index', 'as' => 'contratos']);
     Route::get('contrato/create', ['uses' => 'Gerencial\ContratoController@create', 'as' => 'contrato.create']);
     Route::get('contrato/{contract}/edit', ['uses' => 'Gerencial\ContratoController@edit', 'as' => 'contrato.edit']);
     Route::post('contrato/store', ['uses' => 'Gerencial\ContratoController@store', 'as' => 'contrato.store']);
     Route::post('contrato/{contract}/update', ['uses' => 'Gerencial\ContratoController@update', 'as' => 'contrato.update']);
-    Route::get('cursos',  ['uses' =>'CursosController@index','as'=>'cursos.index']);
-    Route::post('cursos/store',  ['uses' =>'CursosController@store','as'=>'cursos.store']);
-    Route::post('cursos/delete/{id}',  ['uses' =>'CursosController@delete','as'=>'cursos.delete']);
-
+    Route::get('cursos', ['uses' => 'CursosController@index', 'as' => 'cursos.index']);
+    Route::post('cursos/store', ['uses' => 'CursosController@store', 'as' => 'cursos.store']);
+    Route::post('cursos/delete/{id}', ['uses' => 'CursosController@delete', 'as' => 'cursos.delete']);
     //expenses
     Route::get('contrato/{contract}/expenses', ['uses' => 'Gerencial\Contrato\ContratoExpensesController@index', 'as' => 'contrato.expenses']);
     Route::get('contrato/{contract}/expenses/create', ['uses' => 'Gerencial\Contrato\ContratoExpensesController@create', 'as' => 'contrato.expenses.create']);
@@ -206,8 +219,8 @@ Route::group(['prefix'=>'gerencial','as' => 'gerencial.', 'middleware' => ['auth
     Route::get('contrato/admin/{contract}/formings', ['uses' => 'Gerencial\ContratoAdminController@formings', 'as' => 'contrato.admin.formings']);
 
     Route::get('contrato/admin/{contract}/prod', ['uses' => 'Gerencial\ContratoAdminController@prod', 'as' => 'contrato.admin.prod']);
-    Route::get('contrato/admin/{contract}/prod/create', ['uses' => 'Gerencial\ContratoAdminController@prodCreate', 'as' => 'contrato.admin.prod.create']);
-    Route::post('contrato/admin/{contract}/prod/store', ['uses' => 'Gerencial\ContratoAdminController@prodStore', 'as' => 'contrato.admin.prod.store']);
+    Route::get('contrato/admin/{contract}/prod/create/{id?}', ['uses' => 'Gerencial\ContratoAdminController@prodCreate', 'as' => 'contrato.admin.prod.create']);
+    Route::post('contrato/admin/{contract}/prod/store/{idproduct?}', ['uses' => 'Gerencial\ContratoAdminController@prodStore', 'as' => 'contrato.admin.prod.store']);
     Route::get('contrato/admin/prod/{prod}/edit', ['uses' => 'Gerencial\ContratoAdminController@prodEdit', 'as' => 'contrato.admin.prod.edit']);
     Route::post('contrato/admin/prod/{prod}/edit', ['uses' => 'Gerencial\ContratoAdminController@prodEditPost', 'as' => 'contrato.admin.prod.edit.post']);
     Route::get('contrato/admin/prod/{prod}/remove', ['uses' => 'Gerencial\ContratoAdminController@prodRemove', 'as' => 'contrato.admin.prod.remove']);

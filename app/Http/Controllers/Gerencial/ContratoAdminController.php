@@ -21,6 +21,11 @@ use Illuminate\Support\Facades\DB;
 
 class ContratoAdminController extends Controller
 {
+    private $recordMaster;
+
+    function __construct() {
+        parent::__construct();
+    }
     public function panel(Contract $contract)
     {
         return view('gerencial.contrato.admin.panel', ['contract' => $contract]);

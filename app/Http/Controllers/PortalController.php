@@ -46,41 +46,60 @@ use Intervention\Image\Facades\Image;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class PortalController extends Controller
-{
+class PortalController extends Controller {
 
-    public function home()
-    {
-        
+    function __construct() {
+        parent::__construct();
+    }
+
+    function log($action) {
+        $this->helper->log(\auth()->user()->userable->contract_id, $action);
+    }
+
+    public function home() {
         try {
             if (Auth::user()->userable_type == 'App\Collaborator') {
                 return redirect()->route('gerencial.contratos');
             }
-            
-            
+
+
             return redirect()->route('portal.extrato');
         } catch (\Throwable $th) {
             return redirect()->route('login');
         }
-        
-       
     }
 
-    public function extrato()
-    {
+    function cancel($idproduct) {
         $formando = Auth::user()->userable->id;
+        $parcelas = FormandoProdutosParcelas::where('formandos_produtos_id', $idproduct)->where('formandos_id', $formando)->get();
+        foreach ($parcelas as $retorno) {
+            $parcelas = ParcelasPagamentos::where('parcela_id', $retorno->id)->get();
+            foreach ($parcelas as $retorno2) {
+                PagamentosBoleto::where('parcela_pagamento_id', $retorno2->id)->first()->delete();
+                $retorno2->delete();
+
+                $retorno->delete();
+            }
+            FormandoProdutosEServicos::where('id', $idproduct)->delete();
+            return redirect(url("/portal/extrato"))->send();
+        }
+    }
+
+    public function extrato() {
+
+        $formando = Auth::user()->userable->id;
+        $this->log('Acessou o extrato.');
         $pedidos = FormandoProdutosEServicos::where('forming_id', $formando)->where('status', 1)->get();
         $dataView = ['pedidos' => $pedidos];
 
         return view('portal.extrato', $dataView);
     }
 
-    public function extratoProduto(FormandoProdutosEServicos $prod, PagSeguroService $pseg)
-    {
+    public function extratoProduto(FormandoProdutosEServicos $prod, PagSeguroService $pseg) {
 
-        
+
         $forming_id = \auth()->user()->userable->id;
-        
+
         if ($prod->forming_id != $forming_id) {
             return redirect()->route('erro.404');
         }
@@ -192,7 +211,6 @@ class PortalController extends Controller
 
                         $events_array[$event_temp->id]['tickets'] = $tickets;
                         //dd('ok');
-
                     }
                 }
             }
@@ -208,8 +226,13 @@ class PortalController extends Controller
 
         $logoimini = '/public/img/logo_i_mini.png';
         $logo = asset('img/logo.png');
-
-        if (isset($pagamentos[$parcela['id']]->typepaind_type) && $pagamentos[$parcela['id']]->typepaind_type == 'App\PagamentosCartao') {
+        if (
+                isset($parcela['id']) &&
+                isset(
+                        $pagamentos[$parcela['id']]->typepaind_type
+                ) &&
+                $pagamentos[$parcela['id']]->typepaind_type == 'App\PagamentosCartao'
+        ) {
             $pgto = PagamentosCartao::where('parcela_pagamento_id', $pagamentos[$parcela['id']]->id)->get()->toArray()[0];
         } else {
             $pgto = null;
@@ -219,13 +242,11 @@ class PortalController extends Controller
 
         $id_sessao = $pseg->geraSessao();
         $disable_cc_pgto = false;
-        
+
         return view('portal.extrato_detalhe', compact('prod', 'parcelas', 'termo', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'events_array', 'logoimini', 'logo', 'id_sessao', 'pgto', 'disable_cc_pgto'));
     }
 
-    public function extratoProdutoPayCredit(FormandoProdutosEServicos $prod, PagSeguroService $pseg)
-    {
-
+    public function extratoProdutoPayCredit(FormandoProdutosEServicos $prod, PagSeguroService $pseg) {
         if ($prod->forming_id != \auth()->user()->userable->id) {
             return redirect()->route('erro.404');
         }
@@ -286,14 +307,12 @@ class PortalController extends Controller
         $parce_max = ($parce_max > 12) ? 12 : $parce_max;
         $parce_max = ($parce_max <= 0) ? 1 : $parce_max;
         $id_sessao = $pseg->geraSessao();
-        
+
         AuditAndLog::createLog(Auth::user()->id, 'Acessou Extrato Produtos: ' . $prod->name . ' - ID#' . $prod->id, 'null', Auth::user()->userable->contract_id);
         return view('portal.extrato_produto_paycredit', compact('prod', 'parcelas', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'parce_max', 'sum_pags', 'id_sessao'));
     }
 
-    public function extratoProdutoPayCreditProcess(FormandoProdutosEServicos $prod, Request $request)
-    {
-
+    public function extratoProdutoPayCreditProcess(FormandoProdutosEServicos $prod, Request $request) {
         $forming = Forming::find($prod->forming_id);
 
         //$saldo = $request->get('saldo');
@@ -331,15 +350,15 @@ class PortalController extends Controller
         $parcelsMax++;
 
         $parcela = FormandoProdutosParcelas::create(
-            [
-                'formandos_produtos_id' => $prod->id,
-                'formandos_id' => $forming->id,
-                'contrato_id' => $forming->contract_id,
-                'dt_vencimento' => date("Y-m-d"),
-                'numero_parcela' => $parcelsMax,
-                'valor' => $saldo,
-                'status' => 1,
-            ]
+                        [
+                            'formandos_produtos_id' => $prod->id,
+                            'formandos_id' => $forming->id,
+                            'contrato_id' => $forming->contract_id,
+                            'dt_vencimento' => date("Y-m-d"),
+                            'numero_parcela' => $parcelsMax,
+                            'valor' => $saldo,
+                            'status' => 1,
+                        ]
         );
         //$pagamento = ParcelasPagamentos::create(['parcela_id' => $parcela->id, 'valor_pago' =>0]);
 
@@ -438,7 +457,6 @@ class PortalController extends Controller
             'total' => 0,
             'installments' => $retorno->installmentCount,
             'invoice_id' => $retorno->code,
-
         ];
 
         $pagamentoCartao = PagamentosCartao::create($dataInsert);
@@ -455,54 +473,52 @@ class PortalController extends Controller
             //$request->session()->flash("process_lr", $retorno->LR);
             return redirect()->route("portal.extrato.produto.paycredit", ["prod" => $prod->id]);
         }
-/*
-$dataInsert = [
-'parcela_pagamento_id' => $pagamento->id,
-'status' => $pseg->cod_status($retorno->status),
-'payable_with' => 'credit_card',
-'total' => $retorno->grossAmount,
-'installments' => $retorno->installmentCount,
-'invoice_id' => $retorno->code,
+        /*
+          $dataInsert = [
+          'parcela_pagamento_id' => $pagamento->id,
+          'status' => $pseg->cod_status($retorno->status),
+          'payable_with' => 'credit_card',
+          'total' => $retorno->grossAmount,
+          'installments' => $retorno->installmentCount,
+          'invoice_id' => $retorno->code,
 
-];
+          ];
 
-$pagamentoCartao = PagamentosCartao::create($dataInsert);
+          $pagamentoCartao = PagamentosCartao::create($dataInsert);
 
-$pagamento->typepaind()->associate($pagamentoCartao);
-$pagamento->save();
+          $pagamento->typepaind()->associate($pagamentoCartao);
+          $pagamento->save();
 
-//$status = $pseg->cod_status($retorno->status);
-$parcels = $request->get('parcels');
-//dd($parcels);
-if (is_array($parcels)) {
-foreach ($parcels as $p) {
+          //$status = $pseg->cod_status($retorno->status);
+          $parcels = $request->get('parcels');
+          //dd($parcels);
+          if (is_array($parcels)) {
+          foreach ($parcels as $p) {
 
-$parcelsModel = FormandoProdutosParcelas::find($p);
-if ($parcelsModel) {
-foreach ($parcelsModel->pagamento as $pgs) {
-$parcelaPagamento = ParcelasPagamentos::find($pgs->id);
+          $parcelsModel = FormandoProdutosParcelas::find($p);
+          if ($parcelsModel) {
+          foreach ($parcelsModel->pagamento as $pgs) {
+          $parcelaPagamento = ParcelasPagamentos::find($pgs->id);
 
-if ($parcelaPagamento) {
-if ($parcelaPagamento->typepaind) {
-$parcelaPagamento->typepaind->delete();
-}
-$parcelaPagamento->delete();
-}
-}
-$parcelsModel->delete();
-}
-}
-}
+          if ($parcelaPagamento) {
+          if ($parcelaPagamento->typepaind) {
+          $parcelaPagamento->typepaind->delete();
+          }
+          $parcelaPagamento->delete();
+          }
+          }
+          $parcelsModel->delete();
+          }
+          }
+          }
 
- */
+         */
 
         $request->session()->flash("process_success_msg", "processado, estamos aguardando a aprovação da compra");
         return redirect()->route("portal.extrato.produto", ["prod" => $prod->id]);
-
     }
 
-    public function boleto(FormandoProdutosParcelas $parcela, PagSeguroService $gatewayService, $hash_pseg = null)
-    {
+    public function boleto(FormandoProdutosParcelas $parcela, PagSeguroService $gatewayService, $hash_pseg = null) {
         //dd($hash_pseg);
         if (is_null($hash_pseg)) {
             return redirect()->back();
@@ -510,7 +526,7 @@ $parcelsModel->delete();
 
         //$ret = $gatewayService->consultarTransacao('57BBA86F0D354C46A5D75F4915428EE3');
         //dd($ret);
-        
+
         if (auth()->user()->userable_id != $parcela->formando->id) {
             die('erro 55');
         }
@@ -522,10 +538,9 @@ $parcelsModel->delete();
             $pagamento = ParcelasPagamentos::create(['parcela_id' => $parcela->id, 'valor_pago' => 0]);
         }
 
-        
+
         if (!$pagamento->typepaind) {
-        //if (true) {
-            
+            //if (true) {
             //$novo_vencimento = date('Y-m-d', strtotime("+1 days"));
             $novo_vencimento = $parcela->dt_vencimento;
 
@@ -552,7 +567,6 @@ $parcelsModel->delete();
 
                     $parcela = FormandoProdutosParcelas::find($parcela->id);
                     AuditAndLog::createLog(Auth::user()->id, 'Boleto em Atraso Atualizado: ' . $parcela->id . ' - Parcela:  ' . $parcela->numero_parcela . ' | Valor Antigo: ' . $valor_antigo . ' | Data de Vencimento Antiga: ' . $venc_antigo . ' | Dias de atraso: ' . $juros->getDiasEmAberto() . ' | Multa: ' . $juros->getMultaTotal() . ' | Juros: ' . $juros->getJurosTotal() . ' | Novo Vencimento: ' . $novo_vencimento . ' | Novo valor: ' . $juros->getValorTotal(), 'null', Auth::user()->userable->contract_id);
-
                 }
             }
 
@@ -640,8 +654,8 @@ $parcelsModel->delete();
         return redirect($pagamento->typepaind->secure_url);
     }
 
-    public function perfil()
-    {
+    public function perfil() {
+        $this->log('Acessou o perfil.');
         $formando = \auth()->user()->userable()->get()->toArray()[0];
 
         //Altura
@@ -670,8 +684,7 @@ $parcelsModel->delete();
         return view('portal.perfil', compact('formando', 'i_altura', 'calcado', 'camiseta', 'contrato'));
     }
 
-    public function perfilUpdate(Request $request)
-    {
+    public function perfilUpdate(Request $request) {
         $this->validate($request, [
             "nome" => "required",
             "sobrenome" => "required",
@@ -696,7 +709,7 @@ $parcelsModel->delete();
         $logFormings = $formando->toArray();
         $formando->update($dadosUpdate);
         $password = $request->get('password');
-        if (isset($password) and !empty($password)) {
+        if (isset($password) and!empty($password)) {
             $formando->user->password = bcrypt($request->get('password'));
             $formando->user->save();
         }
@@ -709,22 +722,20 @@ $parcelsModel->delete();
         return redirect()->route('portal.perfil');
     }
 
-    public function chamados()
-    {
+    public function chamados() {
         $formando_id = \auth()->user()->userable->id;
+        $this->log('Acessou os chamados.');
         $chamados_abertos = Chamado::where('forming_id', '=', $formando_id)->whereIn('status', [1, 6])->get()->toArray();
         $chamados_finalizados = Chamado::where('forming_id', '=', $formando_id)->where('status', '=', 2)->get()->toArray();
         return view('portal.chamados', compact('chamados_abertos', 'chamados_finalizados'));
     }
 
-    public function chamadosAbrir()
-    {
+    public function chamadosAbrir() {
 
         return view('portal.chamado_abrir');
     }
 
-    public function chamadosStore(Request $request)
-    {
+    public function chamadosStore(Request $request) {
         $this->validate($request, [
             "setor_chamado" => "required",
             "assunto_chamado" => "required|not_in:0",
@@ -756,28 +767,25 @@ $parcelsModel->delete();
         return redirect()->route('portal.chamados');
     }
 
-    public function chamadosShow(Chamado $chamado)
-    {
+    public function chamadosShow(Chamado $chamado) {
         AuditAndLog::createLog(Auth::user()->id, "Visualizou Chamado: " . $chamado->titulo . " - ID#{$chamado->id}", 'null', Auth::user()->userable->contract_id);
         return view('portal.chamados_show', compact('chamado'));
     }
 
-    public function chamadosConversasStore(Request $request, Chamado $chamado)
-    {
+    public function chamadosConversasStore(Request $request, Chamado $chamado) {
         $dataDb = $request->all();
         $dataDb['user_id'] = \auth()->user()->id;
         $chamado->conversas()->create($dataDb);
         return redirect()->route('portal.chamados.show', ['chamado' => $chamado->id]);
     }
 
-    public function informativos()
-    {
+    public function informativos() {
         $contrato = Contract::find(\auth()->user()->userable->contract_id);
+        $this->log('Acessou os informativos.');
         return view('portal.informativos', compact('contrato'));
     }
 
-    public function informativosShow(Informativo $informativo)
-    {
+    public function informativosShow(Informativo $informativo) {
         if ($informativo->status == 0) {
             $informativo->status = 1;
             $informativo->save();
@@ -786,16 +794,15 @@ $parcelsModel->delete();
         return view('portal.informativos_show', compact('informativo'));
     }
 
-    public function comissao()
-    {
+    public function comissao() {
+        $this->log('Acessou a comissão de formatura.');
         $contractId = auth()->user()->userable->contract_id;
         $comissao = Forming::where('comissao', 1)->where('contract_id', $contractId)->get();
         return view('portal.comissao', compact('comissao'));
     }
 
-    public function comprasExtras()
-    {
-
+    public function comprasExtras() {
+        $this->log('Acessou as compras extras.');
         $contrato = Contract::find(\auth()->user()->userable->contract_id);
         $mes = DateHelper::ConvertMonth($contrato->conclusion_month);
         $date_now = date("Y-m-d H:i:s");
@@ -807,18 +814,18 @@ $parcelsModel->delete();
             $product[$p['id']] = $p;
 
             $values = ProductAndServiceValues::where('products_and_services_id', $p['id'])
-                ->where('date_start', '<=', date('Y-m-d H:i:s'))
-                ->where('date_end', '>', date('Y-m-d H:i:s'))
-                ->get()->first()->toArray();
+                            ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                            ->where('date_end', '>', date('Y-m-d H:i:s'))
+                            ->get()->first()->toArray();
 
             $product[$p['id']]['values'] = $values;
             $product[$p['id']]['termo'] = ProdutosEServicosTermo::where('id', '=', $p['termo_id'])->get()->toArray()[0];
             $product[$p['id']]['termo'] = str_replace('[[=valor]]', number_format($product[$p['id']]['values']['value'], 2, ',', '.'), $product[$p['id']]['termo']);
 
             $discounts = ProductAndServiceDiscounts::where('products_and_services_id', $p['id'])
-                ->where('date_start', '<=', date('Y-m-d H:i:s'))
-                ->where('date_end', '>', date('Y-m-d H:i:s'))
-                ->get()->toArray();
+                            ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                            ->where('date_end', '>', date('Y-m-d H:i:s'))
+                            ->get()->toArray();
 
             foreach ($discounts as $d) {
                 $product[$p['id']]['discounts'][$d['maximum_parcels']] = $d;
@@ -827,7 +834,6 @@ $parcelsModel->delete();
             $product[$p['id']]['max_parcels'] = ConvertData::calculaParcelasMeses(date('Y-m-d', strtotime($product[$p['id']]['values']['date_start'])), $product[$p['id']]['values']['maximum_parcels']);
 
             //$product[$p['id']]['discounts'] = $discounts;
-
         }
 
         if (count($products) <= 0) {
@@ -837,8 +843,7 @@ $parcelsModel->delete();
         return view('portal.comprasextras', ['product' => $product]);
     }
 
-    public function comprasExtrasComprar(ProductAndService $produto, $quantidade, $dia_pagamento, $tppg = 'boleto')
-    {
+    public function comprasExtrasComprar(ProductAndService $produto, $quantidade, $dia_pagamento, $tppg = 'boleto') {
 
         //        echo "<pre>";
         //        for($i=1; $i<= 3200; $i+=1){
@@ -859,18 +864,18 @@ $parcelsModel->delete();
         $product['product'] = $produto;
 
         $values = ProductAndServiceValues::where('products_and_services_id', $produto->id)
-            ->where('date_start', '<=', date('Y-m-d H:i:s'))
-            ->where('date_end', '>', date('Y-m-d H:i:s'))
-            ->get()->first()->toArray();
+                        ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                        ->where('date_end', '>', date('Y-m-d H:i:s'))
+                        ->get()->first()->toArray();
 
         $product['values'] = $values;
         $product['termo'] = ProdutosEServicosTermo::where('id', '=', $product['product']['termo_id'])->get()->toArray()[0];
         $product['termo'] = str_replace('[[=valor]]', number_format($product['values']['value'], 2, ',', '.'), $product['termo']);
 
         $discounts = ProductAndServiceDiscounts::where('products_and_services_id', $produto->id)
-            ->where('date_start', '<=', date('Y-m-d H:i:s'))
-            ->where('date_end', '>', date('Y-m-d H:i:s'))
-            ->get()->toArray();
+                        ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                        ->where('date_end', '>', date('Y-m-d H:i:s'))
+                        ->get()->toArray();
 
         foreach ($discounts as $d) {
             $product['discounts'][$d['maximum_parcels']] = $d;
@@ -909,7 +914,6 @@ $parcelsModel->delete();
             }
         }
         //FIM Peculariedade FEI
-
         //Peculariedade USJT & FMU
         if ($product['product']->id == 35 or $product['product']->id == 36) {
             if ($tipo_pagamento == 'boleto') {
@@ -933,7 +937,6 @@ $parcelsModel->delete();
             }
         }
         //FIM Peculariedade USJT & FMU
-
         //Peculariedade FEI Pré-evento Maresias
         if ($product['product']->id == 37) {
             if ($tipo_pagamento == 'boleto') {
@@ -949,7 +952,6 @@ $parcelsModel->delete();
             }
         }
         //FIM Peculariedade FEI Pré-evento Maresias
-
         //Peculariedade FEI Pré-evento Maresias
         if ($product['product']->id == 38) {
             if ($tipo_pagamento == 'boleto') {
@@ -1042,8 +1044,7 @@ $parcelsModel->delete();
         return view('portal.comprasextras_comprar', ['product' => $product, 'quantidade' => $quantidade, 'dia_pagamento' => $dia_pagamento, 'tipo_pagamento' => $tipo_pagamento]);
     }
 
-    public function comprasExtrasStore(Request $request)
-    {
+    public function comprasExtrasStore(Request $request) {
         $data = $request->all();
         $produto = ProductAndService::find($data['prodId']);
         $formando = Forming::find(\auth()->user()->userable->id);
@@ -1053,16 +1054,16 @@ $parcelsModel->delete();
         if ($data['tp_pg'] == 'credit') {
 
             $values = ProductAndServiceValues::where('products_and_services_id', $produto->id)
-                ->where('date_start', '<=', date('Y-m-d H:i:s'))
-                ->where('date_end', '>', date('Y-m-d H:i:s'))
-                ->get()->first()->toArray();
+                            ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                            ->where('date_end', '>', date('Y-m-d H:i:s'))
+                            ->get()->first()->toArray();
 
             $product[$produto->id]['values'] = $values;
 
             $discounts = ProductAndServiceDiscounts::where('products_and_services_id', $produto->id)
-                ->where('date_start', '<=', date('Y-m-d H:i:s'))
-                ->where('date_end', '>', date('Y-m-d H:i:s'))
-                ->get()->toArray();
+                            ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                            ->where('date_end', '>', date('Y-m-d H:i:s'))
+                            ->get()->toArray();
 
             foreach ($discounts as $d) {
                 $product[$produto->id]['discounts'][$d['maximum_parcels']] = $d;
@@ -1162,15 +1163,15 @@ $parcelsModel->delete();
             }
 
             $parcela = FormandoProdutosParcelas::create(
-                [
-                    'formandos_produtos_id' => $codFormandoProduto->id,
-                    'formandos_id' => $formando->id,
-                    'contrato_id' => $formando->contract_id,
-                    'dt_vencimento' => date("Y-m-d"),
-                    'numero_parcela' => 1,
-                    'valor' => $totalpago,
-                    'status' => 1,
-                ]
+                            [
+                                'formandos_produtos_id' => $codFormandoProduto->id,
+                                'formandos_id' => $formando->id,
+                                'contrato_id' => $formando->contract_id,
+                                'dt_vencimento' => date("Y-m-d"),
+                                'numero_parcela' => 1,
+                                'valor' => $totalpago,
+                                'status' => 1,
+                            ]
             );
 
             $pagamento = ParcelasPagamentos::create(['parcela_id' => $parcela->id, 'valor_pago' => $totalpago]);
@@ -1203,9 +1204,8 @@ $parcelsModel->delete();
         }
     }
 
-    public function albuns()
-    {
-
+    public function albuns() {
+        $this->log('Acessou os albuns.');
         $forming = Forming::find(\auth()->user()->userable->id);
         $albuns = FormandoProdutosEServicos::where('forming_id', $forming->id)->where('category_id', '2')->get();
 
@@ -1217,55 +1217,57 @@ $parcelsModel->delete();
             $contrato = Contract::find(\auth()->user()->userable->contract_id);
             $mes = DateHelper::ConvertMonth($contrato->conclusion_month);
             $products = ProductAndService::where('contract_id', $contrato->id)->where(
-                'category_id',
-                2
-            )->get()->toArray();
+                            'category_id',
+                            2
+                    )->get()->toArray();
 
             foreach ($products as $p) {
 
                 $product[$p['id']] = $p;
 
                 $values = ProductAndServiceValues::where('products_and_services_id', $p['id'])
-                    ->where('date_start', '<=', date('Y-m-d H:i:s'))
-                    ->where('date_end', '>', date('Y-m-d H:i:s'))
-                    ->get()->first();
-                    
-                if($values){
+                                ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                                ->where('date_end', '>', date('Y-m-d H:i:s'))
+                                ->get()->first();
+
+                if ($values) {
                     $values = $values->toArray();
                 }
 
 
                 $product[$p['id']]['values'] = $values;
                 $product[$p['id']]['termo'] = ProdutosEServicosTermo::where(
-                    'id',
-                    '=',
-                    $p['termo_id']
-                )->get()->toArray()[0];
+                                'id',
+                                '=',
+                                $p['termo_id']
+                        )->get()->toArray()[0];
                 $product[$p['id']]['termo'] = str_replace(
-                    '[[=valor]]',
-                    number_format($product[$p['id']]['values']['value'], 2, ',', '.'),
-                    $product[$p['id']]['termo']
+                        '[[=valor]]',
+                        number_format($product[$p['id']]['values']['value'], 2, ',', '.'),
+                        $product[$p['id']]['termo']
                 );
 
-                $discounts = ProductAndServiceDiscounts::where('products_and_services_id', $p['id'])
-                    ->where('date_start', '<=', date('Y-m-d H:i:s'))
-                    ->where('date_end', '>', date('Y-m-d H:i:s'))
-                    ->get()->toArray();
+                if (isset($product) && isset($p['id']['termo'])) {
 
-                foreach ($discounts as $d) {
-                    $product[$p['id']]['discounts'][$d['maximum_parcels']] = $d;
+                    $product[$p['id']]['termo'] = str_replace('[[=valor]]', number_format($product[$p['id']]['values']['value'], 2, ',', '.'), $product[$p['id']]['termo']);
+                    $discounts = ProductAndServiceDiscounts::where('products_and_services_id', $p['id'])
+                                    ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                                    ->where('date_end', '>', date('Y-m-d H:i:s'))
+                                    ->get()->toArray();
+
+                    foreach ($discounts as $d) {
+                        $product[$p['id']]['discounts'][$d['maximum_parcels']] = $d;
+                    }
+
+                    $product[$p['id']]['max_parcels'] = ConvertData::calculaParcelasMeses(
+                                    date(
+                                            'Y-m-d',
+                                            strtotime($product[$p['id']]['values']['date_start'])
+                                    ),
+                                    $product[$p['id']]['values']['maximum_parcels']
+                    );
                 }
-
-                $product[$p['id']]['max_parcels'] = ConvertData::calculaParcelasMeses(
-                    date(
-                        'Y-m-d',
-                        strtotime($product[$p['id']]['values']['date_start'])
-                    ),
-                    $product[$p['id']]['values']['maximum_parcels']
-                );
-
                 //$product[$p['id']]['discounts'] = $discounts;
-
             }
             if (count($products) <= 0) {
                 return view('portal.albuns', ['product' => null]);
@@ -1275,15 +1277,14 @@ $parcelsModel->delete();
         }
     }
 
-    public function albunsComprar(ProductAndService $produto, $quantidade, $dia_pagamento)
-    {
+    public function albunsComprar(ProductAndService $produto, $quantidade, $dia_pagamento) {
         $product['product'] = $produto;
         $values = ProductAndServiceValues::where('products_and_services_id', $produto->id)
-            ->where('date_start', '<=', date('Y-m-d H:i:s'))
-            ->where('date_end', '>', date('Y-m-d H:i:s'))
-            ->get()->first();
-        
-        if($values){
+                        ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                        ->where('date_end', '>', date('Y-m-d H:i:s'))
+                        ->get()->first();
+
+        if ($values) {
             $values = $values->toArray();
         }
 
@@ -1292,9 +1293,9 @@ $parcelsModel->delete();
         $product['termo'] = str_replace('[[=valor]]', number_format($product['values']['value'], 2, ',', '.'), $product['termo']);
 
         $discounts = ProductAndServiceDiscounts::where('products_and_services_id', $produto->id)
-            ->where('date_start', '<=', date('Y-m-d H:i:s'))
-            ->where('date_end', '>', date('Y-m-d H:i:s'))
-            ->get()->toArray();
+                        ->where('date_start', '<=', date('Y-m-d H:i:s'))
+                        ->where('date_end', '>', date('Y-m-d H:i:s'))
+                        ->get()->toArray();
 
         foreach ($discounts as $d) {
             $product['discounts'][$d['maximum_parcels']] = $d;
@@ -1340,24 +1341,22 @@ $parcelsModel->delete();
         return view('portal.albuns_comprar', ['product' => $product, 'quantidade' => $quantidade, 'dia_pagamento' => $dia_pagamento]);
     }
 
-    public function albunsStore(Request $request)
-    {
+    public function albunsStore(Request $request) {
         $data = $request->all();
-        
+
         $produto = ProductAndService::where('id', $data['prodId'])->get()->toArray();
         $formando = \auth()->user()->userable->id;
         $contrato['id'] = \auth()->user()->userable->contract_id;
         $serviceProdutos = new ProdutosService();
         $produtoIds[$produto[0]['id']] = $data['parcelas'];
-        $prod = $serviceProdutos->cadastraProduto($produtoIds, $data['dia_pagamento'], date('Y-m-d H:i:s'), $formando, $contrato, $data['quantidade']);        
+        $prod = $serviceProdutos->cadastraProduto($produtoIds, $data['dia_pagamento'], date('Y-m-d H:i:s'), $formando, $contrato, $data['quantidade']);
         AuditAndLog::createLog(Auth::user()->id, "Efetou Compra Extra: " . $prod->name . " - Quant.: {$prod->amount} - ID#{$prod->id}", 'null', Auth::user()->userable->contract_id);
         //dd(\Route::current()->getName());
         return $this->extrato();
         //return redirect()->route('portal.extrato');
     }
 
-    public function termoPdf(FormandoProdutosEServicos $product)
-    {
+    public function termoPdf(FormandoProdutosEServicos $product) {
 
         $termo = ProdutosEServicosTermo::find($product->termo_id);
 
@@ -1367,19 +1366,17 @@ $parcelsModel->delete();
         $pdf->loadHTML('
             <meta charset="UTF-8">
             <title>' . $termo->titulo . '</title>'
-            . $content);
+                . $content);
 
         AuditAndLog::createLog(Auth::user()->id, "Imprimiu Termo: " . $termo->titulo, 'null', Auth::user()->userable->contract_id);
         return $pdf->stream();
     }
 
-    public function mmvantagem()
-    {
+    public function mmvantagem() {
         return view('portal.mmvantagem');
     }
 
-    public function raffle(Raffle $raffle, RaffleServices $raffleServices)
-    {
+    public function raffle(Raffle $raffle, RaffleServices $raffleServices) {
         $forming = Auth::user()->userable;
         if ($forming->contract_id != 1) {
             return redirect()->back();
@@ -1396,17 +1393,14 @@ $parcelsModel->delete();
         //dd($quant_numbers);
         //$raffleServices->generateNumbers(100, $forming, $raffle);
         //dd($formando);
-
     }
 
-    public function raffleSelect(Request $request)
-    {
+    public function raffleSelect(Request $request) {
         $raffles = Raffle::where('status', 1)->get();
         return view('portal.raffles-select', compact('raffles'));
     }
 
-    public function raffleNumberUpdate(RaffleNumbers $number)
-    {
+    public function raffleNumberUpdate(RaffleNumbers $number) {
         $forming = Auth::user()->userable;
         if ($forming->contract_id != 1) {
             return redirect()->back();
@@ -1417,9 +1411,8 @@ $parcelsModel->delete();
         return view('portal.rafflenumberupdate', compact('forming', 'raffle', 'raffle_numbers'));
     }
 
-    public function raffleNumberUpStore(RaffleNumbers $number, Request $request)
-    {
-        
+    public function raffleNumberUpStore(RaffleNumbers $number, Request $request) {
+
         $this->validate($request, [
             "buyer_name" => "required",
             "buyer_email" => "required|email",
@@ -1434,21 +1427,20 @@ $parcelsModel->delete();
         $this->imgRafflePress($raffle, $number);
 
         Mail::to($number->buyer_email)->send(new RaffleMail($number));
-        return redirect()->route('portal.raffle',[$raffle->id]);
+        return redirect()->route('portal.raffle', [$raffle->id]);
     }
 
-    public function raffleNumberView(RaffleNumbers $number)
-    {
+    public function raffleNumberView(RaffleNumbers $number) {
         $forming = Auth::user()->userable;
         if ($forming->contract_id != 1) {
             return redirect()->back();
         }
         $raffle = $number->raffle;
         $raffle_numbers = $number;
-        
-        /*if(!is_dir(public_path('img/portal/raffles'))){
-            mkdir(public_path('img/portal/raffles'));
-        }*/
+
+        /* if(!is_dir(public_path('img/portal/raffles'))){
+          mkdir(public_path('img/portal/raffles'));
+          } */
         $imgUrl = public_path('img/portal/raffles') . '/' . $raffle_numbers->img;
 
         if (is_file($imgUrl)) {
@@ -1463,8 +1455,7 @@ $parcelsModel->delete();
         return view('portal.rafflenumberview', compact('forming', 'raffle', 'raffle_numbers', 'url'));
     }
 
-    public function raffleNumberPrint(RaffleNumbers $number)
-    {
+    public function raffleNumberPrint(RaffleNumbers $number) {
 
         $forming = Auth::user()->userable;
         $raffle = Raffle::where('draw_date', '>=', date('Y-m-d'))->where('status', 1)->first();
@@ -1482,8 +1473,7 @@ $parcelsModel->delete();
         return view('portal.rafflenumberprint', compact('url'));
     }
 
-    public function raffleNumberHash(Request $request, $hash)
-    {
+    public function raffleNumberHash(Request $request, $hash) {
         $raffle_numbers = RaffleNumbers::where('hash', $hash)->first();
         if (!$raffle_numbers) {
             return view('portal.rafflenumberhashfail');
@@ -1493,8 +1483,7 @@ $parcelsModel->delete();
         return view('portal.rafflenumberhash', compact('url', 'raffle_numbers'));
     }
 
-    public function ticketSave($code)
-    {
+    public function ticketSave($code) {
         $ticket = Ticket::where('code', $code)->where('status', 1)->first();
         $forming_id = \auth()->user()->userable->id;
         if (!$ticket or ($ticket->forming_id != $forming_id)) {
@@ -1514,17 +1503,16 @@ $parcelsModel->delete();
         return $stream;
     }
 
-    private function imgRafflePress(Raffle $raffle, RaffleNumbers $raffle_numbers)
-    {
+    private function imgRafflePress(Raffle $raffle, RaffleNumbers $raffle_numbers) {
 
         $img = asset('img/portal/' . $raffle->img);
-        
+
         $img_name = $raffle->id . '_' . $raffle_numbers->number;
         $image = Image::make($img)
-            ->resize(800, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            
+                ->resize(800, null, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+
         $image->text(str_pad($raffle_numbers->number, 5, '0', STR_PAD_LEFT), 480, 260, function ($font) {
             $font->file(public_path('assets/common/fonts/arial.ttf'));
             $font->size(22);
@@ -1561,9 +1549,9 @@ $parcelsModel->delete();
             $font->color('#000');
         });
         $image->encode('png');
-        
+
         if (!is_dir(public_path('img/portal/raffles/'))) {
-            mkdir(public_path('img/portal/raffles/'), 0777, true);            
+            mkdir(public_path('img/portal/raffles/'), 0777, true);
         }
         $image->save(public_path('img/portal/raffles/' . $img_name . '.png'), 100);
         $raffle_numbers->img = $image->basename;
@@ -1571,14 +1559,12 @@ $parcelsModel->delete();
         return $image->basename;
     }
 
-    public function identify()
-    {
+    public function identify() {
         $formando = \auth()->user()->userable;
         return view('portal.identify', compact('formando'));
     }
 
-    public function gifts()
-    {
+    public function gifts() {
 
         $contrato = Contract::find(\auth()->user()->userable->contract_id);
         $gifts = Gift::where('status', 1)->where('contract_id', $contrato->id)->get();
@@ -1593,8 +1579,7 @@ $parcelsModel->delete();
         return view('portal.gifts', ['gifts' => $gifts, 'arrays_cart' => $arrays_cart]);
     }
 
-    public function giftdetails(Request $request)
-    {
+    public function giftdetails(Request $request) {
         $formando = Auth::user()->userable;
         $giftId = $request->get('gift');
         $gift = Gift::where('id', $giftId)->where('status', 1)->where('contract_id', $formando->contract_id)->first();
@@ -1609,8 +1594,7 @@ $parcelsModel->delete();
         return view('portal.gift_details', compact('gift', 'arrays_cart'));
     }
 
-    public function giftscheckout(Request $request)
-    {
+    public function giftscheckout(Request $request) {
 
         $delGift = $request->get('del');
         if (isset($delGift) && $delGift > 0) {
@@ -1652,8 +1636,7 @@ $parcelsModel->delete();
         return view('portal.giftscheckout', compact('msg'));
     }
 
-    public function giftspaysession(Request $request)
-    {
+    public function giftspaysession(Request $request) {
         $prods = $request->get('prod');
 
         foreach ($prods as $p) {
@@ -1679,8 +1662,7 @@ $parcelsModel->delete();
         return redirect()->route('portal.gifts.payment');
     }
 
-    public function giftspayment(Request $request)
-    {
+    public function giftspayment(Request $request) {
         $payment = [];
         $payment['count'] = 0;
         $payment['subtotal'] = 0;
@@ -1692,8 +1674,7 @@ $parcelsModel->delete();
         return view('portal.giftspayment', compact('free'));
     }
 
-    public function giftsPayCreditProcess(Request $request)
-    {
+    public function giftsPayCreditProcess(Request $request) {
 
         $payment = [];
         $payment['count'] = 0;
@@ -1780,8 +1761,7 @@ $parcelsModel->delete();
         return redirect()->route("portal.gift.requests");
     }
 
-    public function giftrequest($id)
-    {
+    public function giftrequest($id) {
         $formando = Auth::user()->userable;
         $requestId = $id;
         $request = GiftRequests::where('id', $requestId)->where('status', '>=', 1)->where('forming_id', $formando->id)->first();
@@ -1789,47 +1769,42 @@ $parcelsModel->delete();
         return view('portal.gift_request', compact('request'));
     }
 
-    public function giftrequests()
-    {
+    public function giftrequests() {
         $formando = Auth::user()->userable;
         $requests = GiftRequests::where('status', '>=', 1)->where('forming_id', $formando->id)->orderBy('created_at', 'desc')->get();
 
         return view('portal.gift_requests', compact('requests'));
     }
 
-    public function surveys()
-    {
+    public function surveys() {
         $formando = \auth()->user()->userable;
         $surveys = Survey::where(['contract_id' => $formando->contract_id, 'status' => 1])->get();
         return view('portal.enquete.index', compact('surveys'));
     }
 
-    public function surveyShow(Survey $survey)
-    {
+    public function surveyShow(Survey $survey) {
 
         $formando = \auth()->user()->userable;
         $answer = SurveyAnswer::where([
-            'forming_id' => $formando->id,
-            'survey_id' => $survey->id,
-        ])->first();
+                    'forming_id' => $formando->id,
+                    'survey_id' => $survey->id,
+                ])->first();
         return view('portal.enquete.show', compact('survey', 'answer'));
     }
 
-    public function surveyAnswerStore(Survey $survey, Request $request)
-    {
+    public function surveyAnswerStore(Survey $survey, Request $request) {
         $formando = \auth()->user()->userable;
         $answerId = $request->get('question');
         $answer = SurveyAnswer::create([
-            'forming_id' => $formando->id,
-            'survey_id' => $survey->id,
-            'survey_questions_id' => $answerId,
+                    'forming_id' => $formando->id,
+                    'survey_id' => $survey->id,
+                    'survey_questions_id' => $answerId,
         ]);
         session()->flash('msg', 'Resposta registrada com sucesso!');
         return redirect()->route('portal.survey.index');
     }
 
-    public function extratoProdutoPayCredit2(FormandoProdutosEServicos $prod, PagSeguroService $pseg)
-    {
+    public function extratoProdutoPayCredit2(FormandoProdutosEServicos $prod, PagSeguroService $pseg) {
 
         if ($prod->forming_id != \auth()->user()->userable->id) {
             return redirect()->route('erro.404');
@@ -1893,32 +1868,31 @@ $parcelsModel->delete();
         $id_sessao = $pseg->geraSessao();
         //Alert::error('Ops!', 'oi');
         AuditAndLog::createLog(Auth::user()->id, 'Acessou Extrato Produtos: ' . $prod->name . ' - ID#' . $prod->id, 'null', Auth::user()->userable->contract_id);
-       
+
         $dados_contrato = Contract::find(Auth::user()->userable->contract_id);
 
         $tipo_pagamento = $dados_contrato->tipo_pagamento;
-       
-        return view('portal.extrato_produto_payment', compact('prod', 'parcelas', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'parce_max', 'sum_pags', 'id_sessao','tipo_pagamento'));
+
+        return view('portal.extrato_produto_payment', compact('prod', 'parcelas', 'pagamentos', 'prod_status', 'date', 'dateLimit', 'saldo_pagar', 'valor_pago_p', 'parce_max', 'sum_pags', 'id_sessao', 'tipo_pagamento'));
     }
 
-    public function consultaAtivaBoleto(PagSeguroService $pseg){
+    public function consultaAtivaBoleto(PagSeguroService $pseg) {
 
-       //query de boletos a serem verificados 
-        $boletos_pendentes = PagamentosBoleto::where('due_date','>','2021-02-19')
-        ->where('status','<>','Pago')
-        ->get();
+        //query de boletos a serem verificados 
+        $boletos_pendentes = PagamentosBoleto::where('due_date', '>', '2021-02-19')
+                ->where('status', '<>', 'Pago')
+                ->get();
 
-        
         // dd($boletos_pendentes);
 
 
-        $contrato_id = 3; 
-        
+        $contrato_id = 3;
+
         //varrendo todos os boletos
         foreach ($boletos_pendentes as $key => $value) {
 
             //realizando consulta da transação
-            $transaction = $pseg->consultarTransacao($value->invoice_id,$contrato_id);
+            $transaction = $pseg->consultarTransacao($value->invoice_id, $contrato_id);
             //guardando status da transação
             $status_trn = $pseg->cod_status($transaction->status);
             //data da transação
@@ -1926,15 +1900,15 @@ $parcelsModel->delete();
             //data do pagamento
             $paid_at = new DateTime($transaction->lastEventDate);
 
-           //verificando a existencia da transaction->referncia
-            if( isset($transaction->reference) ){
+            //verificando a existencia da transaction->referncia
+            if (isset($transaction->reference)) {
                 $parcela = FormandoProdutosParcelas::find($transaction->reference);
-            }else{
-                dd($transaction->reference. 'trn nao encontrada');
+            } else {
+                dd($transaction->reference . 'trn nao encontrada');
             }
             //se não houver parcela 
             if (!isset($parcela)) {
-                dd($parcela.'pagamento não entrando');
+                dd($parcela . 'pagamento não entrando');
             }
 
             //se houver um status da transação guardar a descrição do status, o tipo de pagamento a data da transação e a data do pagamento
@@ -1944,7 +1918,7 @@ $parcelsModel->delete();
                 $date = new DateTime($transaction->date);
                 $paid_at = new DateTime($transaction->lastEventDate);
             } else {
-                dd($transaction.'não encontrada na verificação de status');
+                dd($transaction . 'não encontrada na verificação de status');
             }
 
             //se o status for recusado
@@ -1953,53 +1927,50 @@ $parcelsModel->delete();
                 //update no status da parcela FormandoProdutosParcelas 
                 $parcela->update(['status' => 0]);
                 $pagamento = ParcelasPagamentos::where('parcela_id', $parcela->id)->first();
-    
-               //update para deleted 1 (cancelado ou recusado)
+
+                //update para deleted 1 (cancelado ou recusado)
                 $pagamento->update(['valor_pago' => 0, 'deleted' => 1]);
-  
-                $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->first();  
+
+                $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id)->first();
                 $data = [
                     'status' => $status_trn,
-                    // 'deleted' => 1,
+                        // 'deleted' => 1,
                 ];
-    
-               try {
-                
-               
 
-                $pgBoleto->update($data);
-                   
-                $pgBoleto->parcelaPagamento->update(['deleted' => 1]);
-    
-                
-               } catch (\Throwable $th) {
-                 
-                   dd($pgBoleto." pagamento recusado");
-               }
-               
-               
-    
+                try {
+
+
+
+                    $pgBoleto->update($data);
+
+                    $pgBoleto->parcelaPagamento->update(['deleted' => 1]);
+                } catch (\Throwable $th) {
+
+                    dd($pgBoleto . " pagamento recusado");
+                }
+
+
+
                 // echo $deleteBoleto;
                 // echo $deleteParcelaPagamento;
-               
-            }       
+            }
 
 
             // se o status for pago
             if ($status_trn == 'Pago') {
 
-               
+
 
                 //update no status da parcela
                 $parcela->update(['status' => 1]);
                 $pagamento = ParcelasPagamentos::where('parcela_id', $parcela->id)->first();
-    
+
                 if (!$pagamento) {
                     $pagamento = ParcelasPagamentos::create(['parcela_id' => $parcela->id, 'valor_pago' => $transaction->grossAmount]);
                 } else {
                     $pagamento->update(['valor_pago' => ($transaction->grossAmount), 'deleted' => 0]);
                 }
-    
+
                 $dataInsert = [
                     'valor_pago' => $transaction->grossAmount,
                     'payable_with' => null,
@@ -2015,26 +1986,17 @@ $parcelsModel->delete();
 
                 $pgBoleto = PagamentosBoleto::where('parcela_pagamento_id', $pagamento->id);
                 $pgBoleto->update($dataInsert);
-               
-
 
                 $formandos_parcela = FormandoProdutosParcelas::find($pagamento->parcela_id);
-                $formandos_parcela->update(['status'=>1]) ;
-
-            }       
-         
-            
+                $formandos_parcela->update(['status' => 1]);
+            }
         }
-
-    
     }
 
-    public function consultaTransacao(PagSeguroService $pseg, $invoice_id){
-        $contrato_id=3;
-        $transaction = $pseg->consultarTransacao($invoice_id,$contrato_id);
+    public function consultaTransacao(PagSeguroService $pseg, $invoice_id) {
+        $contrato_id = 3;
+        $transaction = $pseg->consultarTransacao($invoice_id, $contrato_id);
         dd($transaction);
-
     }
-
 
 }

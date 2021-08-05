@@ -13,6 +13,16 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
+
+                    <div class="col-lg-12">
+                        <a href="<?= url('/'); ?>/gerencial/formandos/printpapper" class="btn btn-primary"><i class='fa fa-print'></i> Imprimir</a>
+                        <a href="<?= url('/'); ?>/gerencial/formandos/exportexcell" class="btn btn-primary"><i class='fa fa-file-excel-o'></i> Exportar Excell</a>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+                <div class="row">
                         <div class="col-md-12">
                             <table class="table table-hover nowrap dataTable dtr-inline table-responsive" id="table1">
                                 <thead>

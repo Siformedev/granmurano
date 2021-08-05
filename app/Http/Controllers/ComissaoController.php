@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Auth;
 
 class ComissaoController extends Controller
 {
-
+function __construct() {
+        
+    }
     public function painel()
     {
 

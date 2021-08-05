@@ -12,10 +12,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-class CalledController extends Controller
-{
-    public function calleds()
-    {
+
+
+class CalledController extends Controller {
+
+    function __construct() {
+        parent::__construct();
+    }
+
+    public function calleds() {
         $chamados_abertos = Chamado::where('status', '=', 1)->orderBy('updated_at', 'asc')->get()->toArray();
         $chamados_finalizados = Chamado::where('status', '=', 2)->orderBy('updated_at', 'desc')->get()->toArray();
         $chamados_aguardresp = Chamado::where('status', '=', 6)->orderBy('updated_at', 'desc')->get()->toArray();
