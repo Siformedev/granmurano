@@ -18,21 +18,19 @@ use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\DB;
 
+class ContratoAdminController extends Controller {
 
-class ContratoAdminController extends Controller
-{
     private $recordMaster;
 
     function __construct() {
         parent::__construct();
     }
-    public function panel(Contract $contract)
-    {
+
+    public function panel(Contract $contract) {
         return view('gerencial.contrato.admin.panel', ['contract' => $contract]);
     }
 
-    public function dashboard($contract)
-    {
+    public function dashboard($contract) {
 
         $contract = Contract::find($contract);
         $formingArray['total'] = 0;
@@ -48,11 +46,9 @@ class ContratoAdminController extends Controller
         $dateSignature = Carbon::parse($contract->signature_date);
         $daysDifSignature = $dateSignature->diffInDays(Carbon::today());
 
-
         foreach ($formings as $forming) {
 
             @$cursos[$forming->course->name] += 1;
-
 
             if ($daysDifSignature <= 30) {
                 @$dataAdesao[date('d/m/Y', strtotime($forming->dt_adesao))] += 1;
@@ -96,11 +92,11 @@ class ContratoAdminController extends Controller
 
         $i = 1;
         foreach ($dataAdesao as $key => $data) {
-            @$dataAdesaoGrafico['key'] .=  '"' . $key . '"';
-            @$dataAdesaoGrafico['data'] .=  '"' . $data . '"';
+            @$dataAdesaoGrafico['key'] .= '"' . $key . '"';
+            @$dataAdesaoGrafico['data'] .= '"' . $data . '"';
             if ($i < count($dataAdesao)) {
-                @$dataAdesaoGrafico['key'] .=  ",";
-                @$dataAdesaoGrafico['data'] .=  ",";
+                @$dataAdesaoGrafico['key'] .= ",";
+                @$dataAdesaoGrafico['data'] .= ",";
             }
             $i++;
         }
@@ -121,14 +117,12 @@ class ContratoAdminController extends Controller
         $meta['inalcancado'] = $contract->goal - $formingArray['total'];
         $meta['alcancado'] = $formingArray['total'];
 
-        $formingNowDay = Forming::where('contract_id',  $contract->id)->where('dt_adesao', '=', date('Y-m-d'))->get();
-
+        $formingNowDay = Forming::where('contract_id', $contract->id)->where('dt_adesao', '=', date('Y-m-d'))->get();
 
         return view('gerencial.contrato.admin.dashboard', compact('formingArray', 'dataAdesaoGrafico', 'meta', 'formingNowDay', 'contract', 'graf_courses_title', 'graf_courses_quant'));
     }
 
-    public function formings(Contract $contract)
-    {
+    public function formings(Contract $contract) {
 
         $formings = $contract->formings->where('status', 1);
         //dd($formings);
@@ -184,8 +178,7 @@ class ContratoAdminController extends Controller
         return view('gerencial.formandos', compact('contract', 'formingStatus', 'formingPerc', 'formings', 'formingLabel'));
     }
 
-    public function prod(Contract $contract, Request $request)
-    {
+    public function prod(Contract $contract, Request $request) {
         $active = $request->get('active');
         if (isset($active) && $active > 0) {
             $prod = ProductAndService::find($active);
@@ -207,8 +200,8 @@ class ContratoAdminController extends Controller
         return view('gerencial.contrato.admin.prod', ['contract' => $contract, 'produtos' => $produtos, 'categorias' => $categoriaArray]);
     }
 
-    public function prodEdit(Request $request, $prod)
-    {
+    public function prodEdit(Request $request, $prod) {
+
 
         $productValues = ProdutosService::veriricaValoresEDescontosAtuais($prod);
         //dd($request->session());
@@ -223,15 +216,15 @@ class ContratoAdminController extends Controller
         return view('gerencial.contrato.admin.prod_edit', compact('prod', 'categoriaArray', 'parcels', 'productValues'));
     }
 
-    public function prodRemove(Request $request, $prod){
+    public function prodRemove(Request $request, $prod) {
         dd($prod);
     }
 
-    public function prodEditPost(Request $request, $prod)
-    {
-        /*atualiza a descricao*/
+    public function prodEditPost(Request $request, $prod) {
+        /* atualiza a descricao */
         $params['description'] = $request->get('description');
         $produto = ProductAndService::find($prod);
+
         $produto->update($params);
 
         if ($request->has('date_start')) {
@@ -251,22 +244,39 @@ class ContratoAdminController extends Controller
             //$categorias = \App\CategoriasProdutosEServicos::all()->toArray();
 
             $parcels = ProductAndServiceValues::where('products_and_services_id', $prod)
-                ->where('date_start', '<=', $date_start)
-                ->where('date_end', '>=', $date_end)
-                ->get();
+                    ->where('date_start', '<=', $date_start)
+                    ->where('date_end', '>=', $date_end)
+                    ->get();
 
             if ($parcels->count() > 0) {
                 session()->flash('parcel_error', 1);
                 session()->flash('parcel_msg', 'Já existe parcelas para este período!');
                 return redirect()->route('gerencial.contrato.admin.prod.edit', ['prod' => $prod]);
             }
-            /*era create, eu mudei para update, precisa validar*/
-            ProductAndServiceValues::update([
-                'products_and_services_id' => $prod,
-                'maximum_parcels' => $maximum_parcels,
-                'value' => $value,
-                'date_start' => $date_start,
-                'date_end' => $date_end,
+            /* era create, eu mudei para update, precisa validar */
+            /* ProductAndServiceValues::update([
+              'products_and_services_id' => $prod,
+              'maximum_parcels' => $maximum_parcels,
+              'value' => $value,
+              'date_start' => $date_start,
+              'date_end' => $date_end,
+              'permite_renegociacao' => $data['permite_renegociacao'],
+              'multa' => $data['multa'],
+              'juros_ao_mes' => $data['juros_ao_mes'],
+              ]);
+
+             */
+            $data = request()->all();
+
+            ProductAndServiceValues::create([
+                'products_and_services_id' => $produto->id,
+                'maximum_parcels' => $data['max_parcels'],
+                'value' => $data['value'],
+                'date_start' => $data['date_start'],
+                'date_end' => $data['date_end'],
+                'permite_renegociacao' => $data['permite_renegociacao'],
+                'multa' => $data['multa'],
+                'juros_ao_mes' => $data['juros_ao_mes'],
             ]);
 
             session()->flash('parcel_ok', 1);
@@ -276,8 +286,7 @@ class ContratoAdminController extends Controller
         return redirect()->route('gerencial.contrato.admin.prod.edit', ['prod' => $prod]);
     }
 
-    public function prodEditParcelDel(Request $request, $prod, $parcel)
-    {
+    public function prodEditParcelDel(Request $request, $prod, $parcel) {
 
         $parcel = ProductAndServiceValues::where('products_and_services_id', $prod)->where('id', $parcel)->first();
         $parcel->delete();
@@ -287,8 +296,7 @@ class ContratoAdminController extends Controller
         return redirect()->route('gerencial.contrato.admin.prod.edit', ['prod' => $prod]);
     }
 
-    public function prodCreate(Contract $contract)
-    {
+    public function prodCreate(Contract $contract) {
         $produtos = ProductAndService::where('contract_id', $contract->id)->get();
         $categorias = \App\CategoriasProdutosEServicos::all()->toArray();
         foreach ($categorias as $categoria) {
@@ -302,8 +310,7 @@ class ContratoAdminController extends Controller
         return view('gerencial.contrato.admin.prod_create', ['contract' => $contract, 'produtos' => $produtos, 'categorias' => $categoriaArray, 'termos' => $termoArray]);
     }
 
-    public function prodStore(Request $request, Contract $contract)
-    {
+    public function prodStore(Request $request, Contract $contract) {
         $this->validate($request, [
             "name" => "required",
             "description" => "required",
@@ -322,7 +329,7 @@ class ContratoAdminController extends Controller
         $image = Input::file('img');
         if ($image) {
             $dirname = 'assets/uploads/produtos/';
-            $filename  = time() . '.' . $image->getClientOriginalExtension();
+            $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = public_path($dirname . $filename);
             $image = Image::make($image->getRealPath())->resize(200, 200)->save($path);
             $dirimage = $dirname . $image->basename;
@@ -340,14 +347,16 @@ class ContratoAdminController extends Controller
             'value' => $data['value'],
             'date_start' => $data['date_start'],
             'date_end' => $data['date_end'],
+            'permite_renegociacao' => $data['permite_renegociacao'],
+            'multa' => $data['multa'],
+            'juros_ao_mes' => $data['juros_ao_mes'],
         ]);
 
         $request->session()->flash('message', 'O Produto ' . $prod->name . ' foi cadastrado com sucesso!');
         return redirect()->route('gerencial.contrato.admin.prod', ['contract' => $contract->id]);
     }
 
-    public function finance(Request $request, Contract $contract)
-    {
+    public function finance(Request $request, Contract $contract) {
         $total = [];
         $total['parcela'] = 0;
         $total['pago'] = 0;
@@ -397,37 +406,31 @@ class ContratoAdminController extends Controller
             $formings_data[$forming->id]['pago'] = $total_forming['pago'];
             $total_forming['parcela'] = 0;
             $total_forming['pago'] = 0;
-
-        
         }
 
         return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total'));
     }
 
-    public function finance2(Request $request, Contract $contract)
-    {
-        
+    public function finance2(Request $request, Contract $contract) {
+
 
         $total = [];
         $total['parcela'] = 0;
         $total['pago'] = 0;
         $total_forming['parcela'] = 0;
         $total_forming['pago'] = 0;
-        
-        
-        $total_parcela = DB::table('formandos_produtos_parcelas')
-        ->where('status', 1)
-        ->sum('valor');
 
-        
-       $formings_data = [];
+        $total_parcela = DB::table('formandos_produtos_parcelas')
+                ->where('status', 1)
+                ->sum('valor');
+
+        $formings_data = [];
 
         $formings = Forming::where('contract_id', $contract->id)->get();
         foreach ($formings as $forming) {
             $formings_data[$forming->id]['nome'] = $forming->nome . ' ' . $forming->sobrenome;
 
             $products = FormandoProdutosEServicos::where('forming_id', $forming->id)->where('category_id', '=', 1)->get();
-
 
             foreach ($products as $product) {
 
@@ -441,7 +444,6 @@ class ContratoAdminController extends Controller
 
 
                                 @$formings_data[$forming->id]['pgs'][$pagamentos->typepaind_type] += $pagamentos->valor_pago;
-
 
                                 if ($pagamentos->valor_pago > 0) {
 
@@ -467,17 +469,14 @@ class ContratoAdminController extends Controller
 
             $total_forming['parcela'] = 0;
             $total_forming['pago'] = 0;
-
-
         }
 
         // dd($formings_data);
 
-        return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total','total_parcela'));
+        return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total', 'total_parcela'));
     }
 
-    public function financeAccumulatedMonthToMonth(Request $request, Contract $contract)
-    {
+    public function financeAccumulatedMonthToMonth(Request $request, Contract $contract) {
         $vencs = [];
         $total = [];
         $total['parcela'] = 0;
@@ -504,7 +503,6 @@ class ContratoAdminController extends Controller
 
 
                                 @$formings_data[$forming->id]['pgs'][$pagamentos->typepaind_type] += $pagamentos->valor_pago;
-
 
                                 if ($pagamentos->valor_pago > 0) {
 
@@ -541,20 +539,20 @@ class ContratoAdminController extends Controller
 
         //return view('gerencial.contrato.admin.finance', compact('formings_data', 'contract', 'total'));
         //@$vencs[$pagamentos->typepaind->due_date]+= ($pagamentos->valor_pago - 2.49);
-
     }
 
-    public function config_tipo_pagamento(Contract $contract){
+    public function config_tipo_pagamento(Contract $contract) {
         return view('gerencial.contrato.admin.tipo_pagamento', compact('contract'));
     }
 
-    public function store_tipo_pagamento(Request $request){
+    public function store_tipo_pagamento(Request $request) {
 
-      
+
         $contract = Contract::find($request->contrato);
         $contract->tipo_pagamento = $request->tipo_pagamento;
         $contract->save();
 
-        return view('gerencial.contrato.admin.panel', ['contract' => $contract]);   
-     }
+        return view('gerencial.contrato.admin.panel', ['contract' => $contract]);
+    }
+
 }

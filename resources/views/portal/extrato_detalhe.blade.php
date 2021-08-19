@@ -107,7 +107,14 @@
                             </tr>
                             <tr>
                                 <th scope="row">Status</th>
-                                <td>{{$prod_status}}</td>
+                                <td>
+                                    <div class='col-lg-12'>
+                                    {{$prod_status}} 
+                                    </div>
+                                    <div class='col-lg-12'>
+                                    <?php if($prod_status=="Inadimplente"){?><a class='btn btn-primary' href='<?=url('/portal/renegociar/'.$prod['id']);?>'>Renegociar</a><?php } ?>
+                                </div>
+                                </td>
                             </tr>
                             <tr class="">
                                 <th scope="row">TERMO DE ADESÃO</th>
@@ -119,7 +126,7 @@
                 </div>
 
                 <hr>
-                @if (false)
+                @if (isset($ok))
 
 
                 <h3>Parcelas</h3>

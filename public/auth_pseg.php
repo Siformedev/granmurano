@@ -50,8 +50,11 @@ if ($err) {
 }
 
 $xml = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);
+
 $json = json_encode($xml);
 $retorno_pseg = json_decode($json, TRUE);
+$err=false;
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
